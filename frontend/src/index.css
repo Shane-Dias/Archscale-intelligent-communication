@@ -488,3 +488,160 @@ dialog.source-modal::backdrop {
   margin: 0;
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+
+/* ── Deadline proximity badges ─────────────────────────── */
+.deadline-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.deadline-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.2px;
+  width: fit-content;
+}
+
+.deadline-overdue {
+  background: #fde8e8;
+  color: #b3261e;
+  border: 1px solid #f5c2c0;
+}
+
+.deadline-today {
+  background: #fff3e0;
+  color: #b45309;
+  border: 1px solid #fcd090;
+}
+
+.deadline-soon {
+  background: #fff8e1;
+  color: #92600a;
+  border: 1px solid #ffe082;
+}
+
+.deadline-week {
+  background: #e8f4fd;
+  color: #1565c0;
+  border: 1px solid #b3d4f5;
+}
+
+.deadline-ok {
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid #b2d8d8;
+}
+
+/* ── Action cell (task row buttons) ─────────────────────── */
+.action-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Notify button ──────────────────────────────────────── */
+.btn-notify {
+  color: #b45309;
+  border-color: #fcd090;
+}
+
+.btn-notify:hover {
+  background: #fff3e0;
+  color: #92600a;
+  border-color: #f6a623;
+}
+
+/* ── Notes indicator inline with title ─────────────────── */
+.notes-indicator {
+  margin-left: 5px;
+  font-size: 12px;
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* ── Decision list action buttons ───────────────────────── */
+.decision-desc {
+  flex: 1;
+}
+
+.decision-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Toast notification ─────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1b2a4a;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  animation: toast-in 0.2s ease;
+  white-space: nowrap;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Notes modal overrides ──────────────────────────────── */
+.notes-modal .notes-modal-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.notes-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 140px;
+  transition: border-color 0.15s ease;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(46, 111, 111, 0.12);
+}
+
+.notes-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.notes-modal-actions button {
+  margin-top: 0;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg);
+  opacity: 1;
+}

@@ -19,6 +19,7 @@ const DecisionSchema = new mongoose.Schema(
     },
     description: { type: String, required: true },
     decidedBy: { type: String, default: "" },
+    notes: { type: String, default: "" },
   },
   { timestamps: true }
 );

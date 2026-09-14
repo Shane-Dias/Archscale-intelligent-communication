@@ -21,4 +21,26 @@ router.get("/decisions", async (req, res) => {
   }
 });
 
+// PATCH /api/decisions/:id  Body: { notes }
+router.patch("/decisions/:id", async (req, res) => {
+  try {
+    const { notes } = req.body;
+    if (typeof notes !== "string") {
+      return res.status(400).json({ error: "notes must be a string" });
+    }
+
+    const decision = await Decision.findByIdAndUpdate(
+      req.params.id,
+      { notes },
+      { new: true }
+    );
+
+    if (!decision) return res.status(404).json({ error: "Decision not found" });
+    res.json(decision);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update decision" });
+  }
+});
+
 module.exports = router;

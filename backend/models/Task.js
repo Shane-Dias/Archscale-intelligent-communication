@@ -20,6 +20,7 @@ const TaskSchema = new mongoose.Schema(
       enum: ["pending", "in_progress", "done"],
       default: "pending",
     },
+    notes: { type: String, default: "" },
   },
   { timestamps: true }
 );

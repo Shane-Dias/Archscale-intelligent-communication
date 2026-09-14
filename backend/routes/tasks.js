@@ -22,17 +22,33 @@ router.get("/tasks", async (req, res) => {
   }
 });
 
-// PATCH /api/tasks/:id  Body: { status }
+// PATCH /api/tasks/:id  Body: { status?, notes? }
 router.patch("/tasks/:id", async (req, res) => {
   try {
-    const { status } = req.body;
-    if (!["pending", "in_progress", "done"].includes(status)) {
-      return res.status(400).json({ error: "Invalid status value" });
+    const { status, notes } = req.body;
+    const update = {};
+
+    if (status !== undefined) {
+      if (!["pending", "in_progress", "done"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+      }
+      update.status = status;
+    }
+
+    if (notes !== undefined) {
+      if (typeof notes !== "string") {
+        return res.status(400).json({ error: "notes must be a string" });
+      }
+      update.notes = notes;
+    }
+
+    if (Object.keys(update).length === 0) {
+      return res.status(400).json({ error: "No valid fields to update" });
     }
 
     const task = await Task.findByIdAndUpdate(
       req.params.id,
-      { status },
+      update,
       { new: true }
     );
 

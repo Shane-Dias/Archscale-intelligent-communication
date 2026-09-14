@@ -31,10 +31,16 @@ export const getTasks = (params = {}) =>
 export const updateTaskStatus = (id, status) =>
   client.patch(`/tasks/${id}`, { status }).then((r) => r.data);
 
+export const updateTaskNotes = (id, notes) =>
+  client.patch(`/tasks/${id}`, { notes }).then((r) => r.data);
+
 // ── Decisions ─────────────────────────────────────────────
 
 export const getDecisions = (params = {}) =>
   client.get("/decisions", { params }).then((r) => r.data);
+
+export const updateDecisionNotes = (id, notes) =>
+  client.patch(`/decisions/${id}`, { notes }).then((r) => r.data);
 
 // ── Search ────────────────────────────────────────────────
 
