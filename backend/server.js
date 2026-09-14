@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 const extractRoutes = require("./routes/extract");
+const extractFileRoutes = require("./routes/extractFile");
 const taskRoutes = require("./routes/tasks");
 const decisionRoutes = require("./routes/decisions");
 const searchRoutes = require("./routes/search");
@@ -12,7 +13,7 @@ const projectRoutes = require("./routes/projects");
 const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: "2mb" })); // allow reasonably long transcripts
+app.use(express.json({ limit: "10mb" })); // allow large transcripts / extracted file text
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -21,6 +22,7 @@ app.get("/api/health", (req, res) => {
 
 // Feature routes
 app.use("/api", extractRoutes);
+app.use("/api", extractFileRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", decisionRoutes);
 app.use("/api", searchRoutes);

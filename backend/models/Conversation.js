@@ -9,12 +9,13 @@ const ConversationSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ["whatsapp", "email", "meeting_transcript", "manual", "other"],
+      enum: ["whatsapp", "email", "meeting_transcript", "manual", "voice_call", "other"],
       default: "manual",
     },
     rawText: { type: String, required: true },
     summary: { type: String, default: "" },
     participants: [{ type: String }],
+    fileName: { type: String, default: "" }, // original file name for file-upload sources
   },
   { timestamps: true }
 );

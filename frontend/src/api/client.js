@@ -23,6 +23,17 @@ export const extractFromText = (rawText, source, projectId, participants = []) =
     .post("/extract", { rawText, source, participants, projectId })
     .then((r) => r.data);
 
+export const extractFromFile = (file, source, projectId, participants = []) => {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("source", source);
+  form.append("projectId", projectId);
+  if (participants.length) form.append("participants", JSON.stringify(participants));
+  return client
+    .post("/extract/file", form, { headers: { "Content-Type": "multipart/form-data" } })
+    .then((r) => r.data);
+};
+
 // ── Tasks ─────────────────────────────────────────────────
 
 export const getTasks = (params = {}) =>
