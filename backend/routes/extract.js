@@ -42,7 +42,7 @@ router.post("/extract", async (req, res) => {
     }
 
     const model = getModel();
-    const prompt = buildExtractionPrompt(rawText);
+    const prompt = buildExtractionPrompt(rawText, new Date());
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
@@ -65,13 +65,24 @@ router.post("/extract", async (req, res) => {
       participants,
     });
 
-    const tasksToInsert = (parsed.tasks || []).map((t) => ({
-      projectId,
-      conversationId: conversation._id,
-      title: t.title,
-      assignee: t.assignee || "Unassigned",
-      deadline: t.deadline ? new Date(t.deadline) : null,
-    }));
+    const tasksToInsert = (parsed.tasks || []).map((t) => {
+      let deadline = null;
+      if (t.deadline) {
+        const d = new Date(t.deadline);
+        // new Date("YYYY-MM-DD") parses as UTC midnight; shift to local noon so
+        // timezone offsets don't roll the date back by a day when stored.
+        if (!isNaN(d.getTime())) {
+          deadline = new Date(t.deadline + "T12:00:00");
+        }
+      }
+      return {
+        projectId,
+        conversationId: conversation._id,
+        title: t.title,
+        assignee: t.assignee || "Unassigned",
+        deadline,
+      };
+    });
 
     const decisionsToInsert = (parsed.decisions || []).map((d) => ({
       projectId,
@@ -86,10 +97,24 @@ router.post("/extract", async (req, res) => {
       decisionsToInsert.length ? Decision.insertMany(decisionsToInsert) : [],
     ]);
 
+    // insertMany returns raw documents without populated references.
+    // Re-fetch with the same populate projection used by GET /api/tasks and
+    // GET /api/decisions so the client can open SourcePreviewModal immediately
+    // after extraction without needing a full page refresh.
+    const CONV_FIELDS = "source rawText summary participants createdAt";
+    const [populatedTasks, populatedDecisions] = await Promise.all([
+      savedTasks.length
+        ? Task.find({ _id: { $in: savedTasks.map((t) => t._id) } }).populate("conversationId", CONV_FIELDS)
+        : [],
+      savedDecisions.length
+        ? Decision.find({ _id: { $in: savedDecisions.map((d) => d._id) } }).populate("conversationId", CONV_FIELDS)
+        : [],
+    ]);
+
     res.status(201).json({
       conversation,
-      tasks: savedTasks,
-      decisions: savedDecisions,
+      tasks: populatedTasks,
+      decisions: populatedDecisions,
     });
   } catch (err) {
     console.error("Extraction error:", err.message);
