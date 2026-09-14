@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { search } from "../api/client";
 
-export default function SearchBar({ onResults }) {
+export default function SearchBar({ projectId, onResults }) {
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -10,7 +10,7 @@ export default function SearchBar({ onResults }) {
     if (!q.trim()) return;
     setLoading(true);
     try {
-      const results = await search(q);
+      const results = await search(q, projectId);
       onResults(results, q);
     } finally {
       setLoading(false);

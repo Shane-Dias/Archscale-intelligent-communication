@@ -1,9 +1,11 @@
 import { useState } from "react";
+import ProjectSidebar from "./components/ProjectSidebar";
 import Dashboard from "./pages/Dashboard";
 import ProjectMemory from "./pages/ProjectMemory";
 
 export default function App() {
   const [tab, setTab] = useState("dashboard");
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   return (
     <div className="app">
@@ -25,7 +27,20 @@ export default function App() {
         </nav>
       </header>
 
-      <main>{tab === "dashboard" ? <Dashboard /> : <ProjectMemory />}</main>
+      <div className="app-layout">
+        <ProjectSidebar
+          selectedId={selectedProjectId}
+          onSelect={setSelectedProjectId}
+        />
+
+        <main>
+          {tab === "dashboard" ? (
+            <Dashboard projectId={selectedProjectId} />
+          ) : (
+            <ProjectMemory projectId={selectedProjectId} />
+          )}
+        </main>
+      </div>
     </div>
   );
 }

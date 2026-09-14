@@ -1,3 +1,6 @@
+import { useState } from "react";
+import SourcePreviewModal from "./SourcePreviewModal";
+
 const TYPE_LABELS = {
   decision: "Decision",
   approval: "Approval",
@@ -5,6 +8,9 @@ const TYPE_LABELS = {
 };
 
 export default function DecisionList({ decisions }) {
+  const [previewConv, setPreviewConv] = useState(null);
+  const [previewTitle, setPreviewTitle] = useState("");
+
   if (!decisions || decisions.length === 0) {
     return (
       <div className="card">
@@ -12,6 +18,11 @@ export default function DecisionList({ decisions }) {
         <p className="muted">No decisions extracted yet.</p>
       </div>
     );
+  }
+
+  function openPreview(d) {
+    setPreviewConv(d.conversationId);
+    setPreviewTitle(d.description);
   }
 
   return (
@@ -25,9 +36,27 @@ export default function DecisionList({ decisions }) {
             </span>
             <span>{d.description}</span>
             {d.decidedBy && <span className="muted"> — {d.decidedBy}</span>}
+            {d.conversationId && (
+              <button
+                className="btn-icon"
+                onClick={() => openPreview(d)}
+                title="View source"
+                aria-label="View source conversation"
+              >
+                👁
+              </button>
+            )}
           </li>
         ))}
       </ul>
+
+      {previewConv && (
+        <SourcePreviewModal
+          conversation={previewConv}
+          itemTitle={previewTitle}
+          onClose={() => setPreviewConv(null)}
+        />
+      )}
     </div>
   );
 }

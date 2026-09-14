@@ -3,15 +3,16 @@ const Task = require("../models/Task");
 
 const router = express.Router();
 
-// GET /api/tasks?assignee=&status=
+// GET /api/tasks?assignee=&status=&projectId=
 router.get("/tasks", async (req, res) => {
   try {
     const filter = {};
     if (req.query.assignee) filter.assignee = req.query.assignee;
     if (req.query.status) filter.status = req.query.status;
+    if (req.query.projectId) filter.projectId = req.query.projectId;
 
     const tasks = await Task.find(filter)
-      .populate("conversationId", "source createdAt")
+      .populate("conversationId", "source rawText summary participants createdAt")
       .sort({ createdAt: -1 });
 
     res.json(tasks);

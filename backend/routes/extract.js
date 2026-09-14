@@ -1,5 +1,6 @@
 const express = require("express");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Project = require("../models/Project");
 const Conversation = require("../models/Conversation");
 const Task = require("../models/Task");
 const Decision = require("../models/Decision");
@@ -13,23 +14,33 @@ function getModel() {
     throw new Error("GEMINI_API_KEY is not set in .env");
   }
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  return genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+  return genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
 }
 
 /**
  * POST /api/extract
- * Body: { rawText: string, source?: string, participants?: string[] }
+ * Body: { rawText: string, source?: string, participants?: string[], projectId: string }
  * Sends the raw text to Gemini, parses the structured result, and
  * persists a Conversation + its extracted Tasks + Decisions.
  */
 router.post("/extract", async (req, res) => {
-  const { rawText, source = "manual", participants = [] } = req.body;
+  const { rawText, source = "manual", participants = [], projectId } = req.body;
 
   if (!rawText || !rawText.trim()) {
     return res.status(400).json({ error: "rawText is required" });
   }
 
+  if (!projectId) {
+    return res.status(400).json({ error: "projectId is required" });
+  }
+
   try {
+    // Validate that the project exists
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
     const model = getModel();
     const prompt = buildExtractionPrompt(rawText);
 
@@ -47,6 +58,7 @@ router.post("/extract", async (req, res) => {
     }
 
     const conversation = await Conversation.create({
+      projectId,
       source,
       rawText,
       summary: parsed.summary || "",
@@ -54,6 +66,7 @@ router.post("/extract", async (req, res) => {
     });
 
     const tasksToInsert = (parsed.tasks || []).map((t) => ({
+      projectId,
       conversationId: conversation._id,
       title: t.title,
       assignee: t.assignee || "Unassigned",
@@ -61,6 +74,7 @@ router.post("/extract", async (req, res) => {
     }));
 
     const decisionsToInsert = (parsed.decisions || []).map((d) => ({
+      projectId,
       conversationId: conversation._id,
       type: d.type || "decision",
       description: d.description,

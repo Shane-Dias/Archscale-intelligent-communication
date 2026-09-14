@@ -5,7 +5,7 @@ const Decision = require("../models/Decision");
 
 const router = express.Router();
 
-// GET /api/search?q=keyword
+// GET /api/search?q=keyword&projectId=
 // Searches across conversations, tasks, and decisions using MongoDB text indexes.
 router.get("/search", async (req, res) => {
   const q = (req.query.q || "").trim();
@@ -14,10 +14,21 @@ router.get("/search", async (req, res) => {
   }
 
   try {
+    const textFilter = { $text: { $search: q } };
+
+    // Scope to project when provided
+    if (req.query.projectId) {
+      textFilter.projectId = req.query.projectId;
+    }
+
     const [conversations, tasks, decisions] = await Promise.all([
-      Conversation.find({ $text: { $search: q } }).limit(20),
-      Task.find({ $text: { $search: q } }).limit(20),
-      Decision.find({ $text: { $search: q } }).limit(20),
+      Conversation.find(textFilter).limit(20),
+      Task.find(textFilter)
+        .populate("conversationId", "source rawText summary participants createdAt")
+        .limit(20),
+      Decision.find(textFilter)
+        .populate("conversationId", "source rawText summary participants createdAt")
+        .limit(20),
     ]);
 
     res.json({ conversations, tasks, decisions });

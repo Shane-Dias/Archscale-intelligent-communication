@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const ConversationSchema = new mongoose.Schema(
   {
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      required: true,
+    },
     source: {
       type: String,
       enum: ["whatsapp", "email", "meeting_transcript", "manual", "other"],

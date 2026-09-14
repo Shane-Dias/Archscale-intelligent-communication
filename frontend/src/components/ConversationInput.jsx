@@ -3,7 +3,7 @@ import { extractFromText } from "../api/client";
 
 const SOURCES = ["manual", "whatsapp", "email", "meeting_transcript", "other"];
 
-export default function ConversationInput({ onExtracted }) {
+export default function ConversationInput({ projectId, onExtracted }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("manual");
   const [loading, setLoading] = useState(false);
@@ -11,12 +11,12 @@ export default function ConversationInput({ onExtracted }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() || !projectId) return;
 
     setLoading(true);
     setError("");
     try {
-      const result = await extractFromText(text, source);
+      const result = await extractFromText(text, source, projectId);
       onExtracted(result);
       setText("");
     } catch (err) {
@@ -59,7 +59,7 @@ export default function ConversationInput({ onExtracted }) {
 
       {error && <p className="error-text">{error}</p>}
 
-      <button type="submit" disabled={loading}>
+      <button type="submit" disabled={loading || !projectId}>
         {loading ? "Extracting..." : "Extract Tasks & Decisions"}
       </button>
     </form>

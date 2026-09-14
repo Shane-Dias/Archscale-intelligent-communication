@@ -7,6 +7,7 @@ const extractRoutes = require("./routes/extract");
 const taskRoutes = require("./routes/tasks");
 const decisionRoutes = require("./routes/decisions");
 const searchRoutes = require("./routes/search");
+const projectRoutes = require("./routes/projects");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api", extractRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", decisionRoutes);
 app.use("/api", searchRoutes);
+app.use("/api", projectRoutes);
 
 const PORT = process.env.PORT || 5000;
 

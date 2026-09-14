@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const TaskSchema = new mongoose.Schema(
   {
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      required: true,
+    },
     conversationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",

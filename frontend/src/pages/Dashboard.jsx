@@ -5,16 +5,20 @@ import TaskList from "../components/TaskList";
 import DecisionList from "../components/DecisionList";
 import { getTasks, getDecisions } from "../api/client";
 
-export default function Dashboard() {
+export default function Dashboard({ projectId }) {
   const [latestConversation, setLatestConversation] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [decisions, setDecisions] = useState([]);
 
   const refreshAll = useCallback(async () => {
-    const [t, d] = await Promise.all([getTasks(), getDecisions()]);
+    if (!projectId) return;
+    const [t, d] = await Promise.all([
+      getTasks({ projectId }),
+      getDecisions({ projectId }),
+    ]);
     setTasks(t);
     setDecisions(d);
-  }, []);
+  }, [projectId]);
 
   useEffect(() => {
     refreshAll();
@@ -32,10 +36,21 @@ export default function Dashboard() {
     );
   }
 
+  if (!projectId) {
+    return (
+      <div className="page">
+        <p className="muted">← Select a project from the sidebar to get started.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="layout">
       <div className="left-col">
-        <ConversationInput onExtracted={handleExtracted} />
+        <ConversationInput
+          projectId={projectId}
+          onExtracted={handleExtracted}
+        />
         <SummaryCard conversation={latestConversation} />
       </div>
       <div className="right-col">
