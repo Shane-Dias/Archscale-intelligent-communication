@@ -5,12 +5,16 @@ import DecisionList from "../components/DecisionList";
 import SearchResultsPanel from "../components/SearchResultsPanel";
 import { getTasks, getDecisions, search } from "../api/client";
 
-export default function Dashboard({ projectId }) {
-  const [latestConversation, setLatestConversation] = useState(null);
+/**
+ * Props:
+ *  projectId                – selected project _id
+ *  externalSearch           – search query fired from the navbar (string)
+ *  onExternalSearchConsumed – called after we've acted on externalSearch so App can reset it
+ */
+export default function Dashboard({ projectId, externalSearch = "", onExternalSearchConsumed }) {
   const [tasks,     setTasks]     = useState([]);
   const [decisions, setDecisions] = useState([]);
 
-  // Search state
   const [searchQuery,   setSearchQuery]   = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [searching,     setSearching]     = useState(false);
@@ -32,56 +36,22 @@ export default function Dashboard({ projectId }) {
     setSearchQuery("");
   }, [refreshAll]);
 
-  // Keyboard shortcut (⌘K / Ctrl+K) for focusing search input
+  // Fire search when the navbar pushes a query
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        const input = document.getElementById("dashboard-search-input");
-        if (input) input.focus();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+    if (!externalSearch || !projectId) return;
+    setSearchQuery(externalSearch);
+    runSearch(externalSearch);
+    onExternalSearchConsumed?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalSearch]);
 
-  function handleExtracted(result) {
-    setLatestConversation(result.conversation);
-    setTasks((prev)     => [...result.tasks,     ...prev]);
-    setDecisions((prev) => [...result.decisions, ...prev]);
-  }
-
-  function handleTaskUpdate(updatedTask) {
-    setTasks((prev) =>
-      prev.map((t) => t._id === updatedTask._id ? { ...t, ...updatedTask } : t)
-    );
-  }
-
-  function handleTaskDelete(taskId) {
-    setTasks((prev) => prev.filter((t) => t._id !== taskId));
-  }
-
-  function handleDecisionNotesChange(updatedDecision) {
-    setDecisions((prev) =>
-      prev.map((d) =>
-        d._id === updatedDecision._id ? { ...d, notes: updatedDecision.notes } : d
-      )
-    );
-  }
-
-  function handleDecisionDelete(decisionId) {
-    setDecisions((prev) => prev.filter((d) => d._id !== decisionId));
-  }
-
-  async function handleSearch(e) {
-    e.preventDefault();
-    const q = searchQuery.trim();
-    if (!q || !projectId) return;
+  async function runSearch(q) {
+    if (!q.trim() || !projectId) return;
     setSearching(true);
     setSearchError("");
     setSearchResults(null);
     try {
-      const results = await search(q, projectId);
+      const results = await search(q.trim(), projectId);
       setSearchResults(results);
     } catch {
       setSearchError("Search failed. Please try again.");
@@ -90,79 +60,113 @@ export default function Dashboard({ projectId }) {
     }
   }
 
+  async function handleSearch(e) {
+    e.preventDefault();
+    await runSearch(searchQuery);
+  }
+
   function clearSearch() {
     setSearchResults(null);
     setSearchQuery("");
     setSearchError("");
   }
 
+  function handleExtracted(result) {
+    setTasks((prev)     => [...result.tasks,     ...prev]);
+    setDecisions((prev) => [...result.decisions, ...prev]);
+  }
+
+  function handleTaskUpdate(updatedTask) {
+    setTasks((prev) => prev.map((t) => t._id === updatedTask._id ? { ...t, ...updatedTask } : t));
+  }
+
+  function handleTaskDelete(taskId) {
+    setTasks((prev) => prev.filter((t) => t._id !== taskId));
+  }
+
+  function handleDecisionNotesChange(updatedDecision) {
+    setDecisions((prev) =>
+      prev.map((d) => d._id === updatedDecision._id ? { ...d, notes: updatedDecision.notes } : d)
+    );
+  }
+
+  function handleDecisionDelete(decisionId) {
+    setDecisions((prev) => prev.filter((d) => d._id !== decisionId));
+  }
+
   // ── empty state ───────────────────────────────────────────────────────────
   if (!projectId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[480px] bg-white rounded-xl border border-slate-200 p-8 text-center shadow-sm">
-        <div className="w-14 h-14 rounded-2xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 text-2xl mb-4 shadow-sm">
-          🏗️
+        <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center mb-4">
+          <svg className="w-7 h-7 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+              strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          </svg>
         </div>
-        <h2 className="text-lg font-bold text-slate-900">No project selected</h2>
-        <p className="text-xs text-slate-500 mt-1 max-w-sm">
-          Select a project from the left sidebar or create a new project to start ingesting communications.
+        <h2 className="text-base font-bold text-slate-800">No project selected</h2>
+        <p className="text-xs text-slate-500 mt-1 max-w-xs">
+          Select a project from the sidebar or create a new one to get started.
         </p>
       </div>
     );
   }
 
-  // ── render ────────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-6" data-purpose="primary-workspace">
-      {/* ── Global Search Bar ── */}
-      <div className="bg-white rounded-xl border border-slate-200/80 p-3 shadow-sm">
-        <form onSubmit={handleSearch} className="flex items-center gap-3">
+    <div className="space-y-5">
+
+      {/* ── Inline search bar (scoped to dashboard, below navbar) ── */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-3">
+        <form onSubmit={handleSearch} className="flex items-center gap-2">
           <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
               </svg>
             </div>
             <input
-              id="dashboard-search-input"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               disabled={searching}
-              placeholder="Search tasks, decisions, and conversations..."
-              className="block w-full pl-10 pr-20 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition shadow-inner"
+              placeholder="Search within this project…"
+              className="w-full pl-9 pr-8 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
             />
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-xs">
-                ⌘K
-              </kbd>
-            </div>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition"
+                aria-label="Clear"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                </svg>
+              </button>
+            )}
           </div>
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={clearSearch}
-              className="px-2.5 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition"
-            >
-              Clear
-            </button>
-          )}
           <button
             type="submit"
             disabled={searching || !searchQuery.trim()}
-            className={`px-4 py-2 text-xs font-semibold text-white rounded-lg shadow-sm transition ${
-              searching || !searchQuery.trim()
-                ? "bg-slate-300 cursor-not-allowed"
-                : "bg-cyan-700 hover:bg-cyan-800 cursor-pointer"
-            }`}
+            className="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 disabled:bg-slate-200 disabled:text-slate-400 text-white transition flex-shrink-0"
           >
             {searching ? "Searching…" : "Search"}
           </button>
+          {searchResults && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="px-3 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition flex-shrink-0"
+            >
+              Clear results
+            </button>
+          )}
         </form>
         {searchError && <p className="text-xs text-rose-600 mt-2 px-1">{searchError}</p>}
       </div>
 
-      {/* ── Search Results Panel ── */}
+      {/* ── Search results ── */}
       {searchResults && (
         <SearchResultsPanel
           results={searchResults}
@@ -171,13 +175,10 @@ export default function Dashboard({ projectId }) {
         />
       )}
 
-      {/* ── Conversation Ingestion Section ── */}
-      <ConversationInput
-        projectId={projectId}
-        onExtracted={handleExtracted}
-      />
+      {/* ── Conversation ingestion ── */}
+      <ConversationInput projectId={projectId} onExtracted={handleExtracted} />
 
-      {/* ── Tasks Management Section ── */}
+      {/* ── Tasks ── */}
       <TaskList
         tasks={tasks}
         onStatusChange={handleTaskUpdate}
@@ -185,7 +186,7 @@ export default function Dashboard({ projectId }) {
         onTaskDelete={handleTaskDelete}
       />
 
-      {/* ── Decisions and Approvals Section ── */}
+      {/* ── Decisions ── */}
       <DecisionList
         decisions={decisions}
         onNotesChange={handleDecisionNotesChange}
@@ -194,4 +195,3 @@ export default function Dashboard({ projectId }) {
     </div>
   );
 }
-

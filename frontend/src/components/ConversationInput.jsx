@@ -228,8 +228,11 @@ export default function ConversationInput({ projectId, onExtracted }) {
                   onClick={removeFile}
                   className="p-1 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-200 transition"
                   title="Remove file"
+                  aria-label="Remove file"
                 >
-                  ✕
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                  </svg>
                 </button>
               </div>
             )}
