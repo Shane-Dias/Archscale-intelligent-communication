@@ -1,18 +1,20 @@
 import { useState } from "react";
 import SourcePreviewModal from "./SourcePreviewModal";
 import NotesModal from "./NotesModal";
-import { updateDecisionNotes } from "../api/client";
+import { updateDecisionNotes, deleteDecision } from "../api/client";
 
 const TYPE_LABELS = {
-  decision: "Decision",
-  approval: "Approval",
+  decision:         "Decision",
+  approval:         "Approval",
   pending_approval: "Pending Approval",
 };
 
-export default function DecisionList({ decisions, onNotesChange }) {
-  const [previewConv, setPreviewConv] = useState(null);
-  const [previewTitle, setPreviewTitle] = useState("");
-  const [notesDecision, setNotesDecision] = useState(null);
+export default function DecisionList({ decisions, onNotesChange, onDecisionDelete }) {
+  const [previewConv,    setPreviewConv]    = useState(null);
+  const [previewTitle,   setPreviewTitle]   = useState("");
+  const [notesDecision,  setNotesDecision]  = useState(null);
+  const [deletingId,     setDeletingId]     = useState(null);
+  const [toastMsg,       setToastMsg]       = useState("");
 
   if (!decisions || decisions.length === 0) {
     return (
@@ -21,6 +23,11 @@ export default function DecisionList({ decisions, onNotesChange }) {
         <p className="muted">No decisions extracted yet.</p>
       </div>
     );
+  }
+
+  function showToast(msg) {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(""), 3500);
   }
 
   function openPreview(d) {
@@ -33,12 +40,26 @@ export default function DecisionList({ decisions, onNotesChange }) {
     onNotesChange?.(updated);
   }
 
+  async function handleDelete(d) {
+    if (!window.confirm(`Delete this ${TYPE_LABELS[d.type] || "item"}?\n\n"${d.description}"\n\nThis cannot be undone.`)) return;
+    setDeletingId(d._id);
+    try {
+      await deleteDecision(d._id);
+      onDecisionDelete?.(d._id);
+      showToast(`🗑️ ${TYPE_LABELS[d.type] || "Item"} deleted`);
+    } catch {
+      showToast("Failed to delete. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <div className="card">
       <h2>Decisions & Approvals</h2>
       <ul className="decision-list">
         {decisions.map((d) => (
-          <li key={d._id}>
+          <li key={d._id} className={deletingId === d._id ? "row-deleting" : ""}>
             <span className={`badge badge-${d.type}`}>
               {TYPE_LABELS[d.type] || d.type}
             </span>
@@ -48,7 +69,9 @@ export default function DecisionList({ decisions, onNotesChange }) {
                 <span className="notes-indicator" title={d.notes}>📝</span>
               )}
             </span>
-            {d.decidedBy && <span className="muted"> — {d.decidedBy}</span>}
+            {d.decidedBy && (
+              <span className="muted decision-decided-by"> — {d.decidedBy}</span>
+            )}
             <div className="decision-actions">
               <button
                 className="btn-icon"
@@ -68,12 +91,20 @@ export default function DecisionList({ decisions, onNotesChange }) {
                   👁
                 </button>
               )}
+              <button
+                className="btn-icon btn-delete"
+                onClick={() => handleDelete(d)}
+                title="Delete"
+                aria-label="Delete decision"
+                disabled={deletingId === d._id}
+              >
+                🗑️
+              </button>
             </div>
           </li>
         ))}
       </ul>
 
-      {/* Source preview modal */}
       {previewConv && (
         <SourcePreviewModal
           conversation={previewConv}
@@ -82,7 +113,6 @@ export default function DecisionList({ decisions, onNotesChange }) {
         />
       )}
 
-      {/* Notes modal */}
       {notesDecision && (
         <NotesModal
           itemTitle={notesDecision.description}
@@ -90,6 +120,12 @@ export default function DecisionList({ decisions, onNotesChange }) {
           onSave={handleSaveNotes}
           onClose={() => setNotesDecision(null)}
         />
+      )}
+
+      {toastMsg && (
+        <div className="toast" role="status" aria-live="polite">
+          {toastMsg}
+        </div>
       )}
     </div>
   );

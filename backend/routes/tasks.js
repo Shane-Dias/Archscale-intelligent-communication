@@ -42,6 +42,13 @@ router.patch("/tasks/:id", async (req, res) => {
       update.assignee = assignee.trim() || "Unassigned";
     }
 
+    if (req.body.assigneeRole !== undefined) {
+      if (typeof req.body.assigneeRole !== "string") {
+        return res.status(400).json({ error: "assigneeRole must be a string" });
+      }
+      update.assigneeRole = req.body.assigneeRole.trim();
+    }
+
     if (deadline !== undefined) {
       if (deadline === null || deadline === "") {
         update.deadline = null;
@@ -83,6 +90,18 @@ router.patch("/tasks/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to update task" });
+  }
+});
+
+// DELETE /api/tasks/:id
+router.delete("/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) return res.status(404).json({ error: "Task not found" });
+    res.json({ message: "Task deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete task" });
   }
 });
 

@@ -21,7 +21,7 @@ formatting, no code fences, no commentary before or after) in exactly this shape
 {
   "summary": "2-3 sentence summary of the conversation",
   "tasks": [
-    { "title": "string", "assignee": "string or Unassigned", "deadline": "YYYY-MM-DD or null" }
+    { "title": "string", "assignee": "string or Unassigned", "assigneeRole": "string or empty string", "deadline": "YYYY-MM-DD or null" }
   ],
   "decisions": [
     { "type": "decision|approval|pending_approval", "description": "string", "decidedBy": "string" }
@@ -32,6 +32,8 @@ Rules:
 - If a field is unknown, use null or an empty string. Never invent information not present in the text.
 - If there are no tasks, return an empty array for "tasks".
 - If there are no decisions or approvals, return an empty array for "decisions".
+- "assigneeRole" should be the professional role or title of the assignee as mentioned in the conversation
+  (e.g. "Architect", "Developer", "QA Lead", "Project Manager"). If no role is mentioned, use an empty string — never guess.
 - Dates must be in YYYY-MM-DD format. Use today's date (${today}) as the reference
   when resolving relative expressions:
     * A specific date (e.g. "March 15th", "15/03") → convert directly to YYYY-MM-DD.

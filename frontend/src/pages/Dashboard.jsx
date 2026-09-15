@@ -37,10 +37,18 @@ export default function Dashboard({ projectId }) {
     );
   }
 
+  function handleTaskDelete(taskId) {
+    setTasks((prev) => prev.filter((t) => t._id !== taskId));
+  }
+
   function handleDecisionNotesChange(updatedDecision) {
     setDecisions((prev) =>
       prev.map((d) => (d._id === updatedDecision._id ? { ...d, notes: updatedDecision.notes } : d))
     );
+  }
+
+  function handleDecisionDelete(decisionId) {
+    setDecisions((prev) => prev.filter((d) => d._id !== decisionId));
   }
 
   if (!projectId) {
@@ -61,8 +69,17 @@ export default function Dashboard({ projectId }) {
         <SummaryCard conversation={latestConversation} />
       </div>
       <div className="right-col">
-        <TaskList tasks={tasks} onStatusChange={handleTaskUpdate} onTaskUpdate={handleTaskUpdate} />
-        <DecisionList decisions={decisions} onNotesChange={handleDecisionNotesChange} />
+        <TaskList
+            tasks={tasks}
+            onStatusChange={handleTaskUpdate}
+            onTaskUpdate={handleTaskUpdate}
+            onTaskDelete={handleTaskDelete}
+          />
+          <DecisionList
+            decisions={decisions}
+            onNotesChange={handleDecisionNotesChange}
+            onDecisionDelete={handleDecisionDelete}
+          />
       </div>
     </div>
   );

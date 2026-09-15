@@ -56,6 +56,12 @@ export const getDecisions = (params = {}) =>
 export const updateDecisionNotes = (id, notes) =>
   client.patch(`/decisions/${id}`, { notes }).then((r) => r.data);
 
+export const deleteTask = (id) =>
+  client.delete(`/tasks/${id}`).then((r) => r.data);
+
+export const deleteDecision = (id) =>
+  client.delete(`/decisions/${id}`).then((r) => r.data);
+
 // ── Search ────────────────────────────────────────────────
 
 export const search = (q, projectId) =>

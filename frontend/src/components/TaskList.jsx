@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { updateTaskStatus } from "../api/client";
+import { updateTaskStatus, deleteTask } from "../api/client";
 import SourcePreviewModal from "./SourcePreviewModal";
 import EditTaskModal from "./EditTaskModal";
 
 const STATUS_OPTIONS = ["pending", "in_progress", "done"];
 
-/**
- * Returns a human-readable deadline proximity label and a severity class.
- */
 function getDeadlineLabel(deadline) {
   if (!deadline) return null;
   const now = new Date();
@@ -16,21 +13,22 @@ function getDeadlineLabel(deadline) {
   const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
   const diffDays = Math.round((dueDay - nowDay) / (1000 * 60 * 60 * 24));
 
-  if (diffDays < 0)  return { text: "Overdue",            cls: "deadline-overdue" };
-  if (diffDays === 0) return { text: "Due today",          cls: "deadline-today"   };
-  if (diffDays === 1) return { text: "1 day left",         cls: "deadline-soon"    };
-  if (diffDays <= 3)  return { text: `${diffDays} days left`, cls: "deadline-soon" };
-  if (diffDays <= 7)  return { text: `${diffDays} days left`, cls: "deadline-week" };
+  if (diffDays < 0)   return { text: "Overdue",               cls: "deadline-overdue" };
+  if (diffDays === 0) return { text: "Due today",              cls: "deadline-today"   };
+  if (diffDays === 1) return { text: "1 day left",             cls: "deadline-soon"    };
+  if (diffDays <= 3)  return { text: `${diffDays} days left`,  cls: "deadline-soon"    };
+  if (diffDays <= 7)  return { text: `${diffDays} days left`,  cls: "deadline-week"    };
   const weeks = Math.floor(diffDays / 7);
   if (diffDays < 30)  return { text: weeks === 1 ? "1 week left" : `${weeks} weeks left`, cls: "deadline-ok" };
   return { text: due.toLocaleDateString(), cls: "deadline-ok" };
 }
 
-export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
+export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDelete }) {
   const [previewConv,  setPreviewConv]  = useState(null);
   const [previewTitle, setPreviewTitle] = useState("");
   const [editTask,     setEditTask]     = useState(null);
   const [toastMsg,     setToastMsg]     = useState("");
+  const [deletingId,   setDeletingId]   = useState(null);
 
   if (!tasks || tasks.length === 0) {
     return (
@@ -41,7 +39,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
     );
   }
 
-  // ── handlers ────────────────────────────────────────────────────────────────
+  // ── handlers ──────────────────────────────────────────────────────────────
 
   async function handleStatusChange(id, status) {
     const updated = await updateTaskStatus(id, status);
@@ -63,6 +61,20 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
     showToast(`✅ "${updatedTask.title}" updated successfully`);
   }
 
+  async function handleDelete(task) {
+    if (!window.confirm(`Delete task "${task.title}"? This cannot be undone.`)) return;
+    setDeletingId(task._id);
+    try {
+      await deleteTask(task._id);
+      onTaskDelete?.(task._id);
+      showToast(`🗑️ "${task.title}" deleted`);
+    } catch {
+      showToast("Failed to delete task. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   // ── render ────────────────────────────────────────────────────────────────
 
   return (
@@ -82,7 +94,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
           {tasks.map((t) => {
             const dl = getDeadlineLabel(t.deadline);
             return (
-              <tr key={t._id}>
+              <tr key={t._id} className={deletingId === t._id ? "row-deleting" : ""}>
 
                 {/* Title + notes indicator */}
                 <td>
@@ -92,16 +104,21 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
                   )}
                 </td>
 
-                {/* Assignee */}
-                <td>{t.assignee}</td>
+                {/* Assignee + role badge */}
+                <td>
+                  <div className="assignee-cell">
+                    <span className="assignee-name">{t.assignee}</span>
+                    {t.assigneeRole && (
+                      <span className="assignee-role-badge">{t.assigneeRole}</span>
+                    )}
+                  </div>
+                </td>
 
                 {/* Deadline + proximity badge */}
                 <td>
                   <div className="deadline-cell">
                     <span>
-                      {t.deadline
-                        ? new Date(t.deadline).toLocaleDateString()
-                        : "—"}
+                      {t.deadline ? new Date(t.deadline).toLocaleDateString() : "—"}
                     </span>
                     {dl && (
                       <span className={`deadline-badge ${dl.cls}`}>{dl.text}</span>
@@ -124,7 +141,6 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
                 {/* Action buttons */}
                 <td>
                   <div className="action-cell">
-                    {/* Edit — opens full edit modal */}
                     <button
                       className="btn-icon btn-edit"
                       onClick={() => setEditTask(t)}
@@ -133,8 +149,6 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
                     >
                       ✏️
                     </button>
-
-                    {/* Notify */}
                     <button
                       className="btn-icon btn-notify"
                       onClick={() => handleNotify(t)}
@@ -143,8 +157,6 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
                     >
                       🔔
                     </button>
-
-                    {/* Source preview */}
                     {t.conversationId && (
                       <button
                         className="btn-icon"
@@ -158,6 +170,15 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
                         👁
                       </button>
                     )}
+                    <button
+                      className="btn-icon btn-delete"
+                      onClick={() => handleDelete(t)}
+                      title="Delete task"
+                      aria-label="Delete task"
+                      disabled={deletingId === t._id}
+                    >
+                      🗑️
+                    </button>
                   </div>
                 </td>
 
@@ -167,7 +188,6 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
         </tbody>
       </table>
 
-      {/* Edit task modal */}
       {editTask && (
         <EditTaskModal
           task={editTask}
@@ -176,7 +196,6 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
         />
       )}
 
-      {/* Source preview modal */}
       {previewConv && (
         <SourcePreviewModal
           conversation={previewConv}
@@ -185,7 +204,6 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate }) {
         />
       )}
 
-      {/* Toast */}
       {toastMsg && (
         <div className="toast" role="status" aria-live="polite">
           {toastMsg}

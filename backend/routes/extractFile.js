@@ -166,6 +166,7 @@ router.post("/extract/file", upload.single("file"), async (req, res) => {
         conversationId: conversation._id,
         title: t.title,
         assignee: t.assignee || "Unassigned",
+        assigneeRole: t.assigneeRole || "",
         deadline,
       };
     });

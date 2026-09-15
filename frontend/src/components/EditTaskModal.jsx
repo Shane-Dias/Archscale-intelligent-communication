@@ -18,23 +18,21 @@ const STATUS_OPTIONS = [
 export default function EditTaskModal({ task, onSaved, onClose }) {
   const dialogRef = useRef(null);
 
-  // Local form state — initialised from the task prop
-  const [title,    setTitle]    = useState(task.title || "");
-  const [assignee, setAssignee] = useState(task.assignee || "");
-  const [deadline, setDeadline] = useState(
+  const [title,        setTitle]        = useState(task.title        || "");
+  const [assignee,     setAssignee]     = useState(task.assignee     || "");
+  const [assigneeRole, setAssigneeRole] = useState(task.assigneeRole || "");
+  const [deadline,     setDeadline]     = useState(
     task.deadline ? toDateInputValue(task.deadline) : ""
   );
-  const [status,   setStatus]   = useState(task.status || "pending");
-  const [notes,    setNotes]    = useState(task.notes  || "");
-
-  const [saving,   setSaving]   = useState(false);
-  const [error,    setError]    = useState("");
+  const [status,  setStatus]  = useState(task.status || "pending");
+  const [notes,   setNotes]   = useState(task.notes  || "");
+  const [saving,  setSaving]  = useState(false);
+  const [error,   setError]   = useState("");
 
   // ── dialog lifecycle ──────────────────────────────────────────────────────
   useEffect(() => {
     const dialog = dialogRef.current;
     if (dialog && !dialog.open) dialog.showModal();
-
     function handleClose() { onClose(); }
     dialog?.addEventListener("close", handleClose);
     return () => dialog?.removeEventListener("close", handleClose);
@@ -53,9 +51,10 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
     setError("");
     try {
       const updated = await updateTask(task._id, {
-        title:    title.trim(),
-        assignee: assignee.trim() || "Unassigned",
-        deadline: deadline || null,
+        title:        title.trim(),
+        assignee:     assignee.trim() || "Unassigned",
+        assigneeRole: assigneeRole.trim(),
+        deadline:     deadline || null,
         status,
         notes,
       });
@@ -90,7 +89,6 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
           </button>
         </div>
 
-        {/* ── Fields ── */}
         <div className="edit-task-fields">
 
           {/* Title */}
@@ -106,7 +104,7 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
             />
           </div>
 
-          {/* Assignee + Status — side by side */}
+          {/* Assignee + Role — side by side */}
           <div className="edit-task-row">
             <div className="edit-task-field">
               <label className="field-label" htmlFor="et-assignee">Assignee</label>
@@ -115,7 +113,36 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
                 type="text"
                 value={assignee}
                 onChange={(e) => setAssignee(e.target.value)}
-                placeholder="Name or leave blank for Unassigned"
+                placeholder="Name or leave blank"
+              />
+            </div>
+            <div className="edit-task-field">
+              <label className="field-label" htmlFor="et-role">
+                Role
+                <span className="field-hint"> — e.g. Architect, Dev Lead</span>
+              </label>
+              <input
+                id="et-role"
+                type="text"
+                value={assigneeRole}
+                onChange={(e) => setAssigneeRole(e.target.value)}
+                placeholder="Optional role or title"
+              />
+            </div>
+          </div>
+
+          {/* Deadline + Status — side by side */}
+          <div className="edit-task-row">
+            <div className="edit-task-field">
+              <label className="field-label" htmlFor="et-deadline">
+                Deadline
+                <span className="field-hint"> — blank to clear</span>
+              </label>
+              <input
+                id="et-deadline"
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
               />
             </div>
             <div className="edit-task-field">
@@ -130,20 +157,6 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
                 ))}
               </select>
             </div>
-          </div>
-
-          {/* Deadline */}
-          <div className="edit-task-field">
-            <label className="field-label" htmlFor="et-deadline">
-              Deadline
-              <span className="field-hint"> — leave blank to clear</span>
-            </label>
-            <input
-              id="et-deadline"
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-            />
           </div>
 
           {/* Notes */}
@@ -161,10 +174,8 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
 
         </div>
 
-        {/* Error */}
         {error && <p className="error-text">{error}</p>}
 
-        {/* Actions */}
         <div className="notes-modal-actions">
           <button
             type="button"
@@ -184,9 +195,6 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
   );
 }
 
-// ── helpers ───────────────────────────────────────────────────────────────────
-
-/** Convert a stored date to the YYYY-MM-DD string that <input type="date"> expects. */
 function toDateInputValue(date) {
   const d = new Date(date);
   if (isNaN(d.getTime())) return "";

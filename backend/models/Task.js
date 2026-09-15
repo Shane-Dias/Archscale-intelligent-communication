@@ -14,6 +14,7 @@ const TaskSchema = new mongoose.Schema(
     },
     title: { type: String, required: true },
     assignee: { type: String, default: "Unassigned" },
+    assigneeRole: { type: String, default: "" },
     deadline: { type: Date, default: null },
     status: {
       type: String,
