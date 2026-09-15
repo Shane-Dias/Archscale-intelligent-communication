@@ -30,15 +30,10 @@ export default function Dashboard({ projectId }) {
     setDecisions((prev) => [...result.decisions, ...prev]);
   }
 
-  function handleStatusChange(updatedTask) {
+  // Replaces the whole task object in state — used by status change AND full edit save
+  function handleTaskUpdate(updatedTask) {
     setTasks((prev) =>
-      prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
-    );
-  }
-
-  function handleTaskNotesChange(updatedTask) {
-    setTasks((prev) =>
-      prev.map((t) => (t._id === updatedTask._id ? { ...t, notes: updatedTask.notes } : t))
+      prev.map((t) => (t._id === updatedTask._id ? { ...t, ...updatedTask } : t))
     );
   }
 
@@ -66,7 +61,7 @@ export default function Dashboard({ projectId }) {
         <SummaryCard conversation={latestConversation} />
       </div>
       <div className="right-col">
-        <TaskList tasks={tasks} onStatusChange={handleStatusChange} onNotesChange={handleTaskNotesChange} />
+        <TaskList tasks={tasks} onStatusChange={handleTaskUpdate} onTaskUpdate={handleTaskUpdate} />
         <DecisionList decisions={decisions} onNotesChange={handleDecisionNotesChange} />
       </div>
     </div>

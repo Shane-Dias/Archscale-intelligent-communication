@@ -841,3 +841,64 @@ dialog.source-modal::backdrop {
   font-size: 13px;
   line-height: 1.5;
 }
+
+/* ── Edit Task Modal ────────────────────────────────────── */
+.edit-task-modal {
+  max-width: 560px;
+}
+
+.edit-task-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Two fields side-by-side (assignee + status) */
+.edit-task-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .edit-task-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.edit-task-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Date input — match existing text input style */
+input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: white;
+}
+
+input[type="date"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(46, 111, 111, 0.12);
+}
+
+/* Edit button */
+.btn-edit {
+  color: var(--accent);
+  border-color: #b2d8d8;
+}
+
+.btn-edit:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+  opacity: 1;
+}

@@ -22,11 +22,37 @@ router.get("/tasks", async (req, res) => {
   }
 });
 
-// PATCH /api/tasks/:id  Body: { status?, notes? }
+// PATCH /api/tasks/:id  Body: { title?, assignee?, deadline?, status?, notes? }
 router.patch("/tasks/:id", async (req, res) => {
   try {
-    const { status, notes } = req.body;
+    const { title, assignee, deadline, status, notes } = req.body;
     const update = {};
+
+    if (title !== undefined) {
+      if (typeof title !== "string" || !title.trim()) {
+        return res.status(400).json({ error: "title must be a non-empty string" });
+      }
+      update.title = title.trim();
+    }
+
+    if (assignee !== undefined) {
+      if (typeof assignee !== "string") {
+        return res.status(400).json({ error: "assignee must be a string" });
+      }
+      update.assignee = assignee.trim() || "Unassigned";
+    }
+
+    if (deadline !== undefined) {
+      if (deadline === null || deadline === "") {
+        update.deadline = null;
+      } else {
+        const d = new Date(deadline);
+        if (isNaN(d.getTime())) {
+          return res.status(400).json({ error: "deadline must be a valid date or null" });
+        }
+        update.deadline = d;
+      }
+    }
 
     if (status !== undefined) {
       if (!["pending", "in_progress", "done"].includes(status)) {
@@ -50,7 +76,7 @@ router.patch("/tasks/:id", async (req, res) => {
       req.params.id,
       update,
       { new: true }
-    );
+    ).populate("conversationId", "source rawText summary participants createdAt fileName");
 
     if (!task) return res.status(404).json({ error: "Task not found" });
     res.json(task);

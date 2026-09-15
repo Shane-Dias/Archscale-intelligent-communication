@@ -45,6 +45,9 @@ export const updateTaskStatus = (id, status) =>
 export const updateTaskNotes = (id, notes) =>
   client.patch(`/tasks/${id}`, { notes }).then((r) => r.data);
 
+export const updateTask = (id, fields) =>
+  client.patch(`/tasks/${id}`, fields).then((r) => r.data);
+
 // ── Decisions ─────────────────────────────────────────────
 
 export const getDecisions = (params = {}) =>
