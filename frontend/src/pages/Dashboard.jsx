@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import ConversationInput from "../components/ConversationInput";
-import SummaryCard from "../components/SummaryCard";
 import TaskList from "../components/TaskList";
 import DecisionList from "../components/DecisionList";
 import SearchResultsPanel from "../components/SearchResultsPanel";
@@ -29,12 +28,22 @@ export default function Dashboard({ projectId }) {
 
   useEffect(() => {
     refreshAll();
-    // Clear search when project changes
     setSearchResults(null);
     setSearchQuery("");
   }, [refreshAll]);
 
-  // ── handlers ──────────────────────────────────────────────────────────────
+  // Keyboard shortcut (⌘K / Ctrl+K) for focusing search input
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        const input = document.getElementById("dashboard-search-input");
+        if (input) input.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   function handleExtracted(result) {
     setLatestConversation(result.conversation);
@@ -88,60 +97,72 @@ export default function Dashboard({ projectId }) {
   }
 
   // ── empty state ───────────────────────────────────────────────────────────
-
   if (!projectId) {
     return (
-      <div className="page dashboard-empty">
-        <div className="dashboard-empty-inner">
-          <div className="dashboard-empty-icon">🏗️</div>
-          <h2>No project selected</h2>
-          <p className="muted">Select a project from the sidebar to get started.</p>
+      <div className="flex flex-col items-center justify-center min-h-[480px] bg-white rounded-xl border border-slate-200 p-8 text-center shadow-sm">
+        <div className="w-14 h-14 rounded-2xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 text-2xl mb-4 shadow-sm">
+          🏗️
         </div>
+        <h2 className="text-lg font-bold text-slate-900">No project selected</h2>
+        <p className="text-xs text-slate-500 mt-1 max-w-sm">
+          Select a project from the left sidebar or create a new project to start ingesting communications.
+        </p>
       </div>
     );
   }
 
   // ── render ────────────────────────────────────────────────────────────────
-
   return (
-    <div className="dashboard">
-
-      {/* ── Search bar — top of content ── */}
-      <div className="dashboard-search-row">
-        <form className="dashboard-search-form" onSubmit={handleSearch}>
-          <div className="dashboard-search-input-wrap">
-            <span className="dashboard-search-icon" aria-hidden="true">🔍</span>
+    <div className="space-y-6" data-purpose="primary-workspace">
+      {/* ── Global Search Bar ── */}
+      <div className="bg-white rounded-xl border border-slate-200/80 p-3 shadow-sm">
+        <form onSubmit={handleSearch} className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
+            </div>
             <input
+              id="dashboard-search-input"
               type="text"
-              className="dashboard-search-input"
-              placeholder="Search tasks, decisions, and conversations…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               disabled={searching}
+              placeholder="Search tasks, decisions, and conversations..."
+              className="block w-full pl-10 pr-20 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition shadow-inner"
             />
-            {searchQuery && (
-              <button
-                type="button"
-                className="dashboard-search-clear"
-                onClick={clearSearch}
-                aria-label="Clear search"
-              >
-                ✕
-              </button>
-            )}
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-xs">
+                ⌘K
+              </kbd>
+            </div>
           </div>
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="px-2.5 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition"
+            >
+              Clear
+            </button>
+          )}
           <button
             type="submit"
-            className="dashboard-search-btn"
             disabled={searching || !searchQuery.trim()}
+            className={`px-4 py-2 text-xs font-semibold text-white rounded-lg shadow-sm transition ${
+              searching || !searchQuery.trim()
+                ? "bg-slate-300 cursor-not-allowed"
+                : "bg-cyan-700 hover:bg-cyan-800 cursor-pointer"
+            }`}
           >
             {searching ? "Searching…" : "Search"}
           </button>
         </form>
-        {searchError && <p className="error-text" style={{ margin: "6px 0 0" }}>{searchError}</p>}
+        {searchError && <p className="text-xs text-rose-600 mt-2 px-1">{searchError}</p>}
       </div>
 
-      {/* ── Search results panel ── */}
+      {/* ── Search Results Panel ── */}
       {searchResults && (
         <SearchResultsPanel
           results={searchResults}
@@ -150,34 +171,27 @@ export default function Dashboard({ projectId }) {
         />
       )}
 
-      {/* ── Main two-column layout ── */}
-      <div className="dashboard-grid">
+      {/* ── Conversation Ingestion Section ── */}
+      <ConversationInput
+        projectId={projectId}
+        onExtracted={handleExtracted}
+      />
 
-        {/* Left col — input + summary */}
-        <div className="dashboard-left">
-          <ConversationInput
-            projectId={projectId}
-            onExtracted={handleExtracted}
-          />
-          <SummaryCard conversation={latestConversation} />
-        </div>
+      {/* ── Tasks Management Section ── */}
+      <TaskList
+        tasks={tasks}
+        onStatusChange={handleTaskUpdate}
+        onTaskUpdate={handleTaskUpdate}
+        onTaskDelete={handleTaskDelete}
+      />
 
-        {/* Right col — tasks + decisions */}
-        <div className="dashboard-right">
-          <TaskList
-            tasks={tasks}
-            onStatusChange={handleTaskUpdate}
-            onTaskUpdate={handleTaskUpdate}
-            onTaskDelete={handleTaskDelete}
-          />
-          <DecisionList
-            decisions={decisions}
-            onNotesChange={handleDecisionNotesChange}
-            onDecisionDelete={handleDecisionDelete}
-          />
-        </div>
-
-      </div>
+      {/* ── Decisions and Approvals Section ── */}
+      <DecisionList
+        decisions={decisions}
+        onNotesChange={handleDecisionNotesChange}
+        onDecisionDelete={handleDecisionDelete}
+      />
     </div>
   );
 }
+
