@@ -957,3 +957,373 @@ input[type="date"]:focus {
 .decision-decided-by {
   flex-shrink: 0;
 }
+
+/* ══════════════════════════════════════════════════════════
+   NEW DASHBOARD LAYOUT
+   ══════════════════════════════════════════════════════════ */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Two-column grid below the search bar */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.dashboard-left,
+.dashboard-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* cards already have margin-bottom */
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Empty state */
+.dashboard-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.dashboard-empty-inner {
+  text-align: center;
+  color: var(--muted);
+}
+
+.dashboard-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.dashboard-empty-inner h2 {
+  color: var(--navy);
+  margin: 0 0 8px;
+}
+
+/* ── Integrated search bar ──────────────────────────────── */
+.dashboard-search-row {
+  position: sticky;
+  top: 0; /* sticks just below the app header when scrolling */
+  z-index: 8;
+  background: var(--bg);
+  padding: 12px 0 10px;
+  margin-bottom: 4px;
+}
+
+.dashboard-search-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dashboard-search-input-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-search-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 15px;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.dashboard-search-input {
+  width: 100%;
+  padding: 10px 36px 10px 38px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  background: white;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dashboard-search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(46, 111, 111, 0.12);
+}
+
+.dashboard-search-clear {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  margin: 0;
+  line-height: 1;
+}
+
+.dashboard-search-clear:hover {
+  color: var(--text);
+  opacity: 1;
+}
+
+.dashboard-search-btn {
+  margin: 0;
+  padding: 10px 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Search results panel ───────────────────────────────── */
+.search-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  animation: panel-in 0.18s ease;
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.search-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.search-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.search-panel-clear {
+  font-size: 12px;
+  padding: 5px 12px;
+  margin: 0;
+}
+
+.search-panel-empty {
+  text-align: center;
+  padding: 12px 0 4px;
+}
+
+/* Search sections */
+.search-section {
+  margin-bottom: 16px;
+}
+
+.search-section:last-child {
+  margin-bottom: 0;
+}
+
+.search-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-section-count {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.search-result-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+
+.search-result-item:hover {
+  background: var(--bg);
+}
+
+.search-result-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.search-result-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.search-result-bold {
+  font-weight: 600;
+}
+
+.search-result-date {
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.search-result-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Filter bar ─────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 0 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.filter-select {
+  padding: 5px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  width: auto;
+  transition: border-color 0.15s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Overdue toggle */
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.filter-toggle input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--accent);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Clear filters button */
+.filter-clear {
+  background: transparent;
+  color: #b3261e;
+  border: 1px solid #f5c2c0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  margin: 0;
+  transition: background 0.15s ease;
+}
+
+.filter-clear:hover {
+  background: #fde8e8;
+  opacity: 1;
+}
+
+.filter-match-count {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.filter-empty {
+  padding: 12px 0 4px;
+}
+
+/* ── Card header row with count badge ───────────────────── */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.card-header-row h2 {
+  margin: 0;
+}
+
+.card-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid #b2d8d8;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
