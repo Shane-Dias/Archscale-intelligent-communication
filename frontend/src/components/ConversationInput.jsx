@@ -239,7 +239,20 @@ export default function ConversationInput({ projectId, onExtracted }) {
           </div>
         )}
 
-        {error && <p className="text-xs text-rose-600 mt-2">{error}</p>}
+        {error && (
+          <div
+            className="mt-3 flex gap-2.5 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800"
+            role="alert"
+          >
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 9v4m0 4h.01M10.29 3.86l-8.1 14A2 2 0 003.92 21h16.16a2 2 0 001.73-3.14l-8.1-14a2 2 0 00-3.42 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            </svg>
+            <div>
+              <p className="font-semibold">Extraction could not be completed</p>
+              <p className="mt-0.5 leading-relaxed">{error}</p>
+            </div>
+          </div>
+        )}
 
         {/* Footer & Submit Button */}
         <div className="mt-3 flex items-center justify-between flex-wrap gap-3">
@@ -269,4 +282,3 @@ export default function ConversationInput({ projectId, onExtracted }) {
     </div>
   );
 }
-

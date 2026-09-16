@@ -5,6 +5,7 @@ const Conversation = require("../models/Conversation");
 const Task = require("../models/Task");
 const Decision = require("../models/Decision");
 const { buildExtractionPrompt, parseGeminiJSON } = require("../utils/geminiPrompt");
+const { getExtractionErrorResponse } = require("../utils/extractionError");
 
 const router = express.Router();
 
@@ -142,7 +143,11 @@ router.post("/extract", async (req, res) => {
     });
   } catch (err) {
     console.error("Extraction error:", err.message);
-    res.status(500).json({ error: "Extraction failed. Check server logs." });
+    const response = getExtractionErrorResponse(err);
+    res.status(response.status).json({
+      error: response.error,
+      retryable: response.retryable,
+    });
   }
 });
 
