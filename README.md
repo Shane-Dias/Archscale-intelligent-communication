@@ -19,6 +19,7 @@ ArchScale is an AI-powered project communication intelligence layer for architec
 - [6. What We'd Build Next](#6-what-wed-build-next)
 - [7. Setup Instructions](#7-setup-instructions)
   - [Prerequisites](#prerequisites)
+  - [Deploy to Vercel + Render](#deploy-to-vercel--render)
 - [8. Demo / Submission Links](#8-demo--submission-links)
 - [Project Structure](#project-structure)
 
@@ -185,6 +186,16 @@ The repository includes a lightweight confidence-validation script:
 ```powershell
 node backend/routes/extract.test.js
 ```
+
+### Deploy to Vercel + Render
+
+1. Create a MongoDB Atlas database and add its connection string as `MONGO_URI` in Render.
+2. Deploy `backend/` as a Render **Web Service** with build command `npm install`, start command `npm start`, and health-check path `/api/health`.
+3. In Render, set `MONGO_URI`, `GEMINI_API_KEY`, and `FRONTEND_URL`. Set `FRONTEND_URL` to the exact Vercel production URL, for example `https://your-app.vercel.app`.
+4. Deploy `frontend/` as a Vercel Vite project. Set `VITE_API_URL` to the Render service URL, for example `https://your-render-service.onrender.com`.
+5. Redeploy the frontend after changing `VITE_API_URL`, then verify extraction, upload, and search from the Vercel URL.
+
+`VITE_API_URL` is public and is embedded into the frontend build. Keep `GEMINI_API_KEY` and `MONGO_URI` only in Render; never commit them or place them in Vercel.
 
 ## 8. Demo / Submission Links
 
