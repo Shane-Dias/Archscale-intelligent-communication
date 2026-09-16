@@ -4,7 +4,7 @@
 
 ArchScale is an AI-powered project communication intelligence layer for architecture and construction teams. It turns scattered communication into searchable project memory, actionable tasks, and traceable decisions.
 
-> **Demo:** [Add deployed-app URL](PLACEHOLDER_DEMO_URL) · **Video walkthrough:** [Add video URL](PLACEHOLDER_VIDEO_URL)
+> **Demo:** [Open live demo](https://archscale-intelligent-communication-three.vercel.app) · **Video walkthrough:** [Watch the walkthrough](https://drive.google.com/file/d/17DVbQ0qZpdABDpto_HbujfJlTABqeRLv/view?usp=sharing)
 
 ## Table of Contents
 
@@ -201,8 +201,8 @@ node backend/routes/extract.test.js
 
 | Item | Link |
 | --- | --- |
-| Live demo | [PLACEHOLDER — add deployment URL](PLACEHOLDER_DEMO_URL) |
-| Video walkthrough | [PLACEHOLDER — add a 2–3 minute walkthrough](PLACEHOLDER_VIDEO_URL) |
+| Live demo | [Open live demo](https://archscale-intelligent-communication-three.vercel.app) |
+| Video walkthrough | [Watch the walkthrough](https://drive.google.com/file/d/17DVbQ0qZpdABDpto_HbujfJlTABqeRLv/view?usp=sharing) |
 
 ## Project Structure
 
