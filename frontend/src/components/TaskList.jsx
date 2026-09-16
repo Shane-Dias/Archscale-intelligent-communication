@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { updateTaskStatus, deleteTask } from "../api/client";
 import SourcePreviewModal from "./SourcePreviewModal";
 import EditTaskModal from "./EditTaskModal";
+import ConfidenceIndicator from "./ConfidenceIndicator";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const EditIcon = () => (
@@ -330,10 +331,11 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                   >
                     {/* Title */}
                     <td className="py-3 px-4 font-medium text-slate-900 leading-snug">
-                      <div className="flex items-start gap-1.5">
+                      <div className="flex items-center gap-2">
                         <span>{task.title}</span>
+                        <ConfidenceIndicator confidence={task.confidence} size="sm" />
                         {task.notes && (
-                          <span title={task.notes} className="text-slate-400 mt-0.5 flex-shrink-0">
+                          <span title={task.notes} className="text-slate-400 flex-shrink-0">
                             <NotesIcon />
                           </span>
                         )}

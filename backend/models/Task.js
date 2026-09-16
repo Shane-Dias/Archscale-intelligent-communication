@@ -22,6 +22,13 @@ const TaskSchema = new mongoose.Schema(
       default: "pending",
     },
     notes: { type: String, default: "" },
+    confidence: {
+      type: Number,
+      min: 0.0,
+      max: 1.0,
+      default: null,
+      required: false,
+    },
   },
   { timestamps: true }
 );

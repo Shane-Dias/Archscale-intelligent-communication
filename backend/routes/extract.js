@@ -18,6 +18,27 @@ function getModel() {
 }
 
 /**
+ * Validates a confidence score value.
+ * @param {*} score - The confidence score to validate
+ * @returns {number|null} - Valid score in [0.0, 1.0] or null for invalid/missing values
+ */
+function validateConfidence(score) {
+  // Accept undefined/null for backward compatibility
+  if (score === undefined || score === null) return null;
+  
+  // Convert to number if string
+  const num = typeof score === 'string' ? parseFloat(score) : score;
+  
+  // Validate range
+  if (isNaN(num) || num < 0.0 || num > 1.0) {
+    console.warn(`Invalid confidence score ${score}, defaulting to null`);
+    return null;
+  }
+  
+  return num;
+}
+
+/**
  * POST /api/extract
  * Body: { rawText: string, source?: string, participants?: string[], projectId: string }
  * Sends the raw text to Gemini, parses the structured result, and
@@ -82,6 +103,7 @@ router.post("/extract", async (req, res) => {
         assignee: t.assignee || "Unassigned",
         assigneeRole: t.assigneeRole || "",
         deadline,
+        confidence: validateConfidence(t.confidence),
       };
     });
 
@@ -91,6 +113,7 @@ router.post("/extract", async (req, res) => {
       type: d.type || "decision",
       description: d.description,
       decidedBy: d.decidedBy || "",
+      confidence: validateConfidence(d.confidence),
     }));
 
     const [savedTasks, savedDecisions] = await Promise.all([

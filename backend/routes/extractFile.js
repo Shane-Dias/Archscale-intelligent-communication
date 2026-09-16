@@ -70,6 +70,21 @@ function getModel() {
   return genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
 }
 
+// Keep uploaded-file extraction consistent with pasted-text extraction.
+// Missing or malformed scores remain null so older model responses do not
+// prevent otherwise valid tasks and decisions from being saved.
+function validateConfidence(score) {
+  if (score === undefined || score === null) return null;
+
+  const value = typeof score === "string" ? Number.parseFloat(score) : score;
+  if (typeof value !== "number" || Number.isNaN(value) || value < 0 || value > 1) {
+    console.warn(`Invalid confidence score ${score}, defaulting to null`);
+    return null;
+  }
+
+  return value;
+}
+
 const CONV_FIELDS = "source rawText summary participants createdAt fileName";
 
 /**
@@ -168,6 +183,7 @@ router.post("/extract/file", upload.single("file"), async (req, res) => {
         assignee: t.assignee || "Unassigned",
         assigneeRole: t.assigneeRole || "",
         deadline,
+        confidence: validateConfidence(t.confidence),
       };
     });
 
@@ -177,6 +193,7 @@ router.post("/extract/file", upload.single("file"), async (req, res) => {
       type: d.type || "decision",
       description: d.description,
       decidedBy: d.decidedBy || "",
+      confidence: validateConfidence(d.confidence),
     }));
 
     const [savedTasks, savedDecisions] = await Promise.all([

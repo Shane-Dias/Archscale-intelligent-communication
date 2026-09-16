@@ -20,6 +20,13 @@ const DecisionSchema = new mongoose.Schema(
     description: { type: String, required: true },
     decidedBy: { type: String, default: "" },
     notes: { type: String, default: "" },
+    confidence: {
+      type: Number,
+      min: 0.0,
+      max: 1.0,
+      default: null,
+      required: false,
+    },
   },
   { timestamps: true }
 );

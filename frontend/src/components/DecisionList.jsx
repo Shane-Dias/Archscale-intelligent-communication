@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import SourcePreviewModal from "./SourcePreviewModal";
 import NotesModal from "./NotesModal";
+import ConfidenceIndicator from "./ConfidenceIndicator";
 import { updateDecisionNotes, deleteDecision } from "../api/client";
 
 const TYPE_LABELS = {
@@ -219,11 +220,14 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
                 className={`px-5 py-4 hover:bg-slate-50/60 transition ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
               >
                 <div className="flex items-start justify-between gap-4">
-                  {/* Left: badge + text */}
+                  {/* Left: badge + indicator + text */}
                   <div className="flex items-start gap-3 min-w-0 flex-1">
-                    <span className={`flex-shrink-0 inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold border mt-0.5 ${getBadgeStyle(d.type)}`}>
-                      {TYPE_LABELS[d.type] || d.type}
-                    </span>
+                    <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold border ${getBadgeStyle(d.type)}`}>
+                        {TYPE_LABELS[d.type] || d.type}
+                      </span>
+                      <ConfidenceIndicator confidence={d.confidence} size="sm" />
+                    </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-slate-900 leading-snug">{d.description}</p>
                       <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 flex-wrap">

@@ -21,12 +21,20 @@ formatting, no code fences, no commentary before or after) in exactly this shape
 {
   "summary": "2-3 sentence summary of the conversation",
   "tasks": [
-    { "title": "string", "assignee": "string or Unassigned", "assigneeRole": "string or empty string", "deadline": "YYYY-MM-DD or null" }
+    { "title": "string", "assignee": "string or Unassigned", "assigneeRole": "string or empty string", "deadline": "YYYY-MM-DD or null", "confidence": 0.85 }
   ],
   "decisions": [
-    { "type": "decision|approval|pending_approval", "description": "string", "decidedBy": "string" }
+    { "type": "decision|approval|pending_approval", "description": "string", "decidedBy": "string", "confidence": 0.85 }
   ]
 }
+
+Confidence Score Instructions:
+- Each task and decision must include a "confidence" field (0.0 to 1.0).
+- The confidence score represents your self-assessment of extraction accuracy:
+  * 0.9-1.0: Very confident — information is explicit and unambiguous in the conversation.
+  * 0.7-0.89: Confident — information is clear but may involve minor interpretation.
+  * 0.4-0.69: Moderate uncertainty — information requires inference or is partially unclear.
+  * 0.0-0.39: Low confidence — information is vague, ambiguous, or heavily inferred.
 
 Rules:
 - If a field is unknown, use null or an empty string. Never invent information not present in the text.
