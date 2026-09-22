@@ -54,15 +54,15 @@ export default function SourcePreviewModal({ conversation, itemTitle, onClose })
   if (typeof conversation === "string") {
     return (
       <dialog ref={dialogRef} onClick={handleBackdropClick}
-        className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-xl backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm">
-        <div className="px-6 py-4 flex items-center justify-between border-b border-slate-100">
-          <h2 className="text-base font-bold text-slate-900">Source Preview</h2>
+        className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-xl backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="px-6 py-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Source Preview</h2>
           <button onClick={() => dialogRef.current?.close()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200">
             <XIcon />
           </button>
         </div>
-        <p className="px-6 py-5 text-sm text-slate-500">
+        <p className="px-6 py-5 text-sm text-slate-500 dark:text-slate-400">
           Source conversation data is not available. Please refresh and try again.
         </p>
       </dialog>
@@ -75,17 +75,17 @@ export default function SourcePreviewModal({ conversation, itemTitle, onClose })
 
   return (
     <dialog ref={dialogRef} onClick={handleBackdropClick}
-      className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-2xl backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm">
+      className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-2xl backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-col max-h-[85vh]">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 flex-shrink-0 dark:border-slate-800">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
-            <h2 className="text-base font-bold text-slate-900">Source Conversation</h2>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Source Conversation</h2>
           </div>
           <button onClick={() => dialogRef.current?.close()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="Close">
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Close">
             <XIcon />
           </button>
         </div>
@@ -95,33 +95,33 @@ export default function SourcePreviewModal({ conversation, itemTitle, onClose })
 
             {/* Referenced item */}
             {itemTitle && (
-              <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Referenced Item</p>
-                <p className="text-sm font-semibold text-slate-900">{itemTitle}</p>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5 dark:text-slate-500">Referenced Item</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{itemTitle}</p>
               </div>
             )}
 
             {/* AI Summary */}
             <div>
-              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">AI Summary</h3>
-              <p className="text-sm text-slate-700 bg-cyan-50 border border-cyan-100 px-4 py-3 rounded-xl leading-relaxed">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 dark:text-slate-500">AI Summary</h3>
+              <p className="text-sm text-slate-700 bg-cyan-50 border border-cyan-100 px-4 py-3 rounded-xl leading-relaxed dark:border-cyan-500/20 dark:bg-cyan-500/10 dark:text-slate-200">
                 {conversation.summary || "No summary recorded for this item."}
               </p>
             </div>
 
             {/* Metadata */}
             <div className="flex items-center gap-2 flex-wrap text-xs">
-              <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
                 {sourceLabel}
               </span>
-              <span className="text-slate-400 text-[11px]">{date}</span>
+              <span className="text-slate-400 text-[11px] dark:text-slate-500">{date}</span>
               {conversation.participants?.length > 0 && (
-                <span className="text-slate-500 text-[11px]">
-                  Participants: <strong className="text-slate-700">{conversation.participants.join(", ")}</strong>
+                <span className="text-slate-500 text-[11px] dark:text-slate-400">
+                  Participants: <strong className="text-slate-700 dark:text-slate-200">{conversation.participants.join(", ")}</strong>
                 </span>
               )}
               {isFileBased && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
                   <PaperclipIcon />
                   {conversation.fileName}
                 </span>
@@ -130,17 +130,17 @@ export default function SourcePreviewModal({ conversation, itemTitle, onClose })
 
             {/* Raw text / file note */}
             <div>
-              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Original Source Text</h3>
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 dark:text-slate-500">Original Source Text</h3>
               {conversation.rawText ? (
-                <pre className="text-xs font-mono bg-slate-900 text-slate-200 px-4 py-4 rounded-xl max-h-64 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                <pre className="text-xs font-mono bg-slate-900 text-slate-200 px-4 py-4 rounded-xl max-h-64 overflow-y-auto whitespace-pre-wrap leading-relaxed dark:border dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
                   {conversation.rawText}
                 </pre>
               ) : (
-                <div className="flex items-center gap-3.5 px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl">
-                  <div className="text-slate-400 flex-shrink-0"><FileTextIcon /></div>
+                <div className="flex items-center gap-3.5 px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl dark:border-slate-700 dark:bg-slate-800/60">
+                  <div className="text-slate-400 flex-shrink-0 dark:text-slate-500"><FileTextIcon /></div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800">{conversation.fileName || "Uploaded File"}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{conversation.fileName || "Uploaded File"}</p>
+                    <p className="text-xs text-slate-500 mt-0.5 dark:text-slate-400">
                       Text was extracted from this file and processed by the AI.
                     </p>
                   </div>

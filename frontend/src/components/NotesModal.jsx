@@ -37,15 +37,15 @@ export default function NotesModal({ itemTitle, initialNotes = "", onSave, onClo
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-lg backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm"
+      className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-lg backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="flex flex-col gap-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="text-base font-bold text-slate-900">Additional Notes</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Additional Notes</h2>
           <button
             onClick={() => dialogRef.current.close()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             aria-label="Close"
           >
             <XIcon />
@@ -53,15 +53,15 @@ export default function NotesModal({ itemTitle, initialNotes = "", onSave, onClo
         </div>
 
         {/* Context */}
-        <div className="px-6 py-3 bg-slate-50 border-b border-slate-100">
-          <p className="text-xs text-slate-500">
-            <span className="font-semibold text-slate-700">Item: </span>{itemTitle}
+        <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 dark:border-slate-800 dark:bg-slate-800/50">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            <span className="font-semibold text-slate-700 dark:text-slate-200">Item: </span>{itemTitle}
           </p>
         </div>
 
         {/* Notes field */}
         <div className="px-6 py-5">
-          <label className="block text-xs font-semibold text-slate-600 mb-2" htmlFor="notes-textarea">
+          <label className="block text-xs font-semibold text-slate-600 mb-2 dark:text-slate-400" htmlFor="notes-textarea">
             Notes
           </label>
           <textarea
@@ -70,23 +70,23 @@ export default function NotesModal({ itemTitle, initialNotes = "", onSave, onClo
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Add any relevant context, links, or follow-up actions…"
-            className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 resize-y transition font-sans leading-relaxed"
+            className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 resize-y transition font-sans leading-relaxed dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
           />
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100">
+        <div className="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100 dark:border-slate-800">
           <button
             onClick={() => dialogRef.current.close()}
             disabled={saving}
-            className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition disabled:opacity-50"
+            className="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
           >
             {saving ? "Saving…" : "Save Notes"}
           </button>

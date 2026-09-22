@@ -96,27 +96,27 @@ export default function ConversationInput({ projectId, onExtracted }) {
   const canSubmit = !loading && !!projectId && (tab === "text" ? !!text.trim() : !!file);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 md:p-6" data-purpose="ingestion-card">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 md:p-6 dark:border-slate-800 dark:bg-slate-900" data-purpose="ingestion-card">
       {/* Card Header & Source Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 dark:text-slate-100">
             <span>Add a Conversation</span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-cyan-50 text-cyan-700 border border-cyan-200">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-cyan-50 text-cyan-700 border border-cyan-200 dark:border-cyan-500/30 dark:bg-cyan-500/10 dark:text-cyan-300">
               AI Parser
             </span>
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">Ingest communications to automatically extract action items, deadlines, and approvals.</p>
+          <p className="text-xs text-slate-500 mt-0.5 dark:text-slate-400">Ingest communications to automatically extract action items, deadlines, and approvals.</p>
         </div>
 
         {/* Source Selector */}
         <div className="flex items-center gap-2">
-          <label className="text-xs font-medium text-slate-500 whitespace-nowrap" htmlFor="conversation-source">Source:</label>
+          <label className="text-xs font-medium text-slate-500 whitespace-nowrap dark:text-slate-400" htmlFor="conversation-source">Source:</label>
           <select
             id="conversation-source"
             value={source}
             onChange={(e) => setSource(e.target.value)}
-            className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-700 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
+            className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-700 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
             {SOURCES.map((s) => (
               <option key={s.value} value={s.value}>{s.label}</option>
@@ -128,17 +128,17 @@ export default function ConversationInput({ projectId, onExtracted }) {
       <form onSubmit={handleSubmit}>
         {/* Mode Tab Buttons */}
         <div className="mt-4 flex items-center gap-2">
-          <div className="inline-flex p-1 bg-slate-100 rounded-lg text-xs font-semibold">
+          <div className="inline-flex p-1 bg-slate-100 rounded-lg text-xs font-semibold dark:bg-slate-800">
             <button
               type="button"
               onClick={() => { setTab("text"); setError(""); }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition ${
                 tab === "text"
-                  ? "bg-white text-slate-900 shadow-sm border border-slate-200/60"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white text-slate-900 shadow-sm border border-slate-200/60 dark:border-slate-700/60 dark:bg-slate-900 dark:text-white"
+                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
-              <svg className={`w-3.5 h-3.5 ${tab === "text" ? "text-cyan-600" : "text-slate-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-3.5 h-3.5 ${tab === "text" ? "text-cyan-600" : "text-slate-400 dark:text-slate-500"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
               </svg>
               <span>Paste Text</span>
@@ -149,23 +149,23 @@ export default function ConversationInput({ projectId, onExtracted }) {
               onClick={() => { setTab("file"); setError(""); }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition ${
                 tab === "file"
-                  ? "bg-white text-slate-900 shadow-sm border border-slate-200/60"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white text-slate-900 shadow-sm border border-slate-200/60 dark:border-slate-700/60 dark:bg-slate-900 dark:text-white"
+                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
-              <svg className={`w-3.5 h-3.5 ${tab === "file" ? "text-cyan-600" : "text-slate-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-3.5 h-3.5 ${tab === "file" ? "text-cyan-600" : "text-slate-400 dark:text-slate-500"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
               </svg>
               <span>Upload File</span>
             </button>
           </div>
-          <span className="text-xs text-slate-400 ml-2 hidden md:inline">Accepts .txt, .pdf, .docx, audio transcripts, site memos</span>
+          <span className="text-xs text-slate-400 ml-2 hidden md:inline dark:text-slate-500">Accepts .txt, .pdf, .docx, audio transcripts, site memos</span>
         </div>
 
         {/* Text tab */}
         {tab === "text" && (
           <div className="mt-3">
-            <label className="block text-xs font-medium text-slate-700 mb-1.5" htmlFor="conversation-input">
+            <label className="block text-xs font-medium text-slate-700 mb-1.5 dark:text-slate-300" htmlFor="conversation-input">
               Paste conversation, transcript, or email text
             </label>
             <div className="relative">
@@ -175,7 +175,7 @@ export default function ConversationInput({ projectId, onExtracted }) {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Paste your conversation text here... (e.g. 'Site memo: Concrete pour delay confirmed. Amit needs to revise schedule for Nov 1 handover prioritizing MEP work on floors 5-7 by tomorrow.')"
-                className="w-full text-xs font-normal text-slate-800 bg-slate-50/50 border border-slate-200 rounded-lg p-3.5 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition resize-y font-sans leading-relaxed"
+                className="w-full text-xs font-normal text-slate-800 bg-slate-50/50 border border-slate-200 rounded-lg p-3.5 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition resize-y font-sans leading-relaxed dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
               />
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function ConversationInput({ projectId, onExtracted }) {
         {/* File tab */}
         {tab === "file" && (
           <div className="mt-3">
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 mb-1.5 dark:text-slate-300">
               Upload a document or transcript file
             </label>
             {!file ? (
@@ -194,16 +194,18 @@ export default function ConversationInput({ projectId, onExtracted }) {
                 onDragLeave={handleDragLeave}
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
-                  dragging ? "border-cyan-500 bg-cyan-50/50" : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300"
+                  dragging
+                    ? "border-cyan-500 bg-cyan-50/50 dark:bg-cyan-500/10"
+                    : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-slate-600 dark:hover:bg-slate-800"
                 }`}
               >
-                <svg className="w-8 h-8 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-slate-400 mx-auto mb-2 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                 </svg>
-                <p className="text-xs font-semibold text-slate-700">
+                <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                   {dragging ? "Drop file here" : "Drag & drop file here, or click to browse"}
                 </p>
-                <p className="text-[11px] text-slate-400 mt-1">PDF, DOCX, TXT, CSV, Markdown (Max 20MB)</p>
+                <p className="text-[11px] text-slate-400 mt-1 dark:text-slate-500">PDF, DOCX, TXT, CSV, Markdown (Max 20MB)</p>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -213,20 +215,20 @@ export default function ConversationInput({ projectId, onExtracted }) {
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+              <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs dark:border-slate-700 dark:bg-slate-800">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <svg className="w-5 h-5 text-cyan-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-cyan-600 flex-shrink-0 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                   </svg>
                   <div className="truncate">
-                    <p className="font-semibold text-slate-800 truncate">{file.name}</p>
-                    <p className="text-[10px] text-slate-400">{(file.size / 1024).toFixed(0)} KB</p>
+                    <p className="font-semibold text-slate-800 truncate dark:text-slate-100">{file.name}</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">{(file.size / 1024).toFixed(0)} KB</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={removeFile}
-                  className="p-1 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-200 transition"
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-200 transition dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200"
                   title="Remove file"
                   aria-label="Remove file"
                 >
@@ -241,10 +243,10 @@ export default function ConversationInput({ projectId, onExtracted }) {
 
         {error && (
           <div
-            className="mt-3 flex gap-2.5 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800"
+            className="mt-3 flex gap-2.5 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200"
             role="alert"
           >
-            <svg className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg className="mt-0.5 h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 9v4m0 4h.01M10.29 3.86l-8.1 14A2 2 0 003.92 21h16.16a2 2 0 001.73-3.14l-8.1-14a2 2 0 00-3.42 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
             </svg>
             <div>
@@ -256,7 +258,7 @@ export default function ConversationInput({ projectId, onExtracted }) {
 
         {/* Footer & Submit Button */}
         <div className="mt-3 flex items-center justify-between flex-wrap gap-3">
-          <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+          <div className="text-[11px] text-slate-500 flex items-center gap-1.5 dark:text-slate-400">
             <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
             </svg>
@@ -269,7 +271,7 @@ export default function ConversationInput({ projectId, onExtracted }) {
             className={`inline-flex items-center gap-2 px-4 py-2 text-white font-medium text-xs rounded-lg shadow-sm transition-all transform active:scale-98 ${
               canSubmit
                 ? "bg-gradient-to-r from-teal-700 to-cyan-800 hover:from-teal-800 hover:to-cyan-900 cursor-pointer shadow-cyan-900/20"
-                : "bg-slate-300 text-slate-500 cursor-not-allowed"
+                : "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-slate-700 dark:text-slate-400"
             }`}
           >
             <svg className="w-3.5 h-3.5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

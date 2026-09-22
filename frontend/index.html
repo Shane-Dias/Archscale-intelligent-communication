@@ -1,9 +1,28 @@
 <!doctype html>
-<html lang="en" class="bg-slate-50">
+<html lang="en" class="bg-slate-50 dark:bg-slate-950">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ArchScale — Project Communication Intelligence</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a flash of the wrong theme.
+      // Default is light mode: we only switch to dark when the user explicitly chose it.
+      (function () {
+        try {
+          var stored = window.localStorage.getItem("archscale-theme");
+          var root = document.documentElement;
+          if (stored === "dark") {
+            root.classList.add("dark");
+            root.style.colorScheme = "dark";
+          } else {
+            root.classList.remove("dark");
+            root.style.colorScheme = "light";
+          }
+        } catch (error) {
+          /* localStorage unavailable — stay on the default light theme */
+        }
+      })();
+    </script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -12,6 +31,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
       tailwind.config = {
+        darkMode: "class",
         theme: {
           extend: {
             colors: {
@@ -37,9 +57,8 @@
       }
     </script>
   </head>
-  <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-white">
+  <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-white dark:bg-slate-950 dark:text-slate-100">
     <div id="root" class="min-h-screen flex flex-col"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

@@ -37,14 +37,14 @@ function formatDate(date) {
 
 function ResultBadge({ type, label }) {
   const styles = {
-    conversation: "bg-violet-50 text-violet-700 border-violet-200",
-    decision: "bg-blue-50 text-blue-700 border-blue-200",
-    approval: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    pending_approval: "bg-amber-50 text-amber-800 border-amber-200",
+    conversation: "bg-violet-50 text-violet-700 border-violet-200 dark:border-violet-500/30 dark:bg-violet-500/10 dark:text-violet-300",
+    decision: "bg-blue-50 text-blue-700 border-blue-200 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300",
+    approval: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300",
+    pending_approval: "bg-amber-50 text-amber-800 border-amber-200 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300",
   };
 
   return (
-    <span className={`inline-flex shrink-0 items-center rounded-md border px-2 py-1 text-[11px] font-semibold ${styles[type] || "bg-slate-50 text-slate-700 border-slate-200"}`}>
+    <span className={`inline-flex shrink-0 items-center rounded-md border px-2 py-1 text-[11px] font-semibold ${styles[type] || "bg-slate-50 text-slate-700 border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"}`}>
       {label}
     </span>
   );
@@ -53,13 +53,13 @@ function ResultBadge({ type, label }) {
 function ResultSection({ title, count, children }) {
   return (
     <section>
-      <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3.5">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">{title}</h3>
-        <span className="inline-flex min-w-5 justify-center rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-600">
+      <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3.5 dark:border-slate-800 dark:bg-slate-800/40">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{title}</h3>
+        <span className="inline-flex min-w-5 justify-center rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
           {count}
         </span>
       </div>
-      <ul className="divide-y divide-slate-100">{children}</ul>
+      <ul className="divide-y divide-slate-100 dark:divide-slate-800">{children}</ul>
     </section>
   );
 }
@@ -69,7 +69,7 @@ function SourceButton({ onClick, label }) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+      className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200"
       title="View source"
       aria-label={label}
     >
@@ -95,43 +95,43 @@ export default function SearchResultsPanel({ results, query, onClear }) {
   }
 
   return (
-    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm" aria-live="polite">
-      <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" aria-live="polite">
+      <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
         <div className="min-w-0">
-          <p className="text-base font-bold text-slate-900">
+          <p className="text-base font-bold text-slate-900 dark:text-slate-100">
             {total === 0 ? "No results found" : `${total} result${total === 1 ? "" : "s"} found`}
           </p>
-          <p className="mt-0.5 truncate text-sm text-slate-500" title={query}>
-            Search results for <span className="font-medium text-slate-700">“{query}”</span>
+          <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400" title={query}>
+            Search results for <span className="font-medium text-slate-700 dark:text-slate-200">“{query}”</span>
           </p>
         </div>
-        <button type="button" onClick={onClear} className="inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 sm:self-auto">
+        <button type="button" onClick={onClear} className="inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 sm:self-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
           <XIcon /> Clear results
         </button>
       </div>
 
       {total === 0 ? (
         <div className="px-5 py-12 text-center">
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
             </svg>
           </div>
-          <p className="mt-3 text-sm font-medium text-slate-700">Try a different search term</p>
-          <p className="mt-1 text-xs text-slate-500">Check the spelling or use a broader keyword.</p>
+          <p className="mt-3 text-sm font-medium text-slate-700 dark:text-slate-200">Try a different search term</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Check the spelling or use a broader keyword.</p>
         </div>
       ) : (
-        <div className="divide-y divide-slate-200">
+        <div className="divide-y divide-slate-200 dark:divide-slate-800">
           {conversations.length > 0 && (
             <ResultSection title="Conversations" count={conversations.length}>
               {conversations.map((conversation) => {
                 const title = conversation.summary || conversation.rawText || "Untitled conversation";
                 return (
-                  <li key={conversation._id} className="flex items-start gap-3 px-5 py-4 transition hover:bg-slate-50/70">
+                  <li key={conversation._id} className="flex items-start gap-3 px-5 py-4 transition hover:bg-slate-50/70 dark:hover:bg-slate-800/50">
                     <ResultBadge type="conversation" label={SOURCE_LABELS[conversation.source] || conversation.source || "Conversation"} />
                     <div className="min-w-0 flex-1">
-                      <p className="line-clamp-2 text-sm font-medium leading-snug text-slate-800">{title}</p>
-                      {formatDate(conversation.createdAt) && <p className="mt-1 text-xs text-slate-500">{formatDate(conversation.createdAt)}</p>}
+                      <p className="line-clamp-2 text-sm font-medium leading-snug text-slate-800 dark:text-slate-200">{title}</p>
+                      {formatDate(conversation.createdAt) && <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{formatDate(conversation.createdAt)}</p>}
                     </div>
                     <SourceButton onClick={() => openPreview(conversation, title)} label="View conversation source" />
                   </li>
@@ -143,12 +143,12 @@ export default function SearchResultsPanel({ results, query, onClear }) {
           {tasks.length > 0 && (
             <ResultSection title="Tasks" count={tasks.length}>
               {tasks.map((task) => (
-                <li key={task._id} className="flex items-start gap-3 px-5 py-4 transition hover:bg-slate-50/70">
+                <li key={task._id} className="flex items-start gap-3 px-5 py-4 transition hover:bg-slate-50/70 dark:hover:bg-slate-800/50">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold leading-snug text-slate-900">{task.title}</p>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+                    <p className="text-sm font-semibold leading-snug text-slate-900 dark:text-slate-100">{task.title}</p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
                       {task.assignee && <span>{task.assignee}</span>}
-                      {task.assigneeRole && <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">{task.assigneeRole}</span>}
+                      {task.assigneeRole && <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">{task.assigneeRole}</span>}
                       {formatDate(task.deadline) && <span>Due {formatDate(task.deadline)}</span>}
                     </div>
                   </div>
@@ -161,11 +161,11 @@ export default function SearchResultsPanel({ results, query, onClear }) {
           {decisions.length > 0 && (
             <ResultSection title="Decisions & Approvals" count={decisions.length}>
               {decisions.map((decision) => (
-                <li key={decision._id} className="flex items-start gap-3 px-5 py-4 transition hover:bg-slate-50/70">
+                <li key={decision._id} className="flex items-start gap-3 px-5 py-4 transition hover:bg-slate-50/70 dark:hover:bg-slate-800/50">
                   <ResultBadge type={decision.type} label={TYPE_LABELS[decision.type] || decision.type} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium leading-snug text-slate-800">{decision.description}</p>
-                    {decision.decidedBy && <p className="mt-1 text-xs text-slate-500">Decided by <span className="font-medium text-slate-600">{decision.decidedBy}</span></p>}
+                    <p className="text-sm font-medium leading-snug text-slate-800 dark:text-slate-200">{decision.description}</p>
+                    {decision.decidedBy && <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Decided by <span className="font-medium text-slate-600 dark:text-slate-300">{decision.decidedBy}</span></p>}
                   </div>
                   {decision.conversationId && <SourceButton onClick={() => openPreview(decision.conversationId, decision.description)} label="View decision source" />}
                 </li>

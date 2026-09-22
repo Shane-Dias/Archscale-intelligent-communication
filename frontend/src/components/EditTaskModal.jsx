@@ -67,21 +67,21 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
     }
   }
 
-  const inputCls = "w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition";
-  const labelCls = "block text-xs font-semibold text-slate-600 mb-1.5";
+  const inputCls = "w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800";
+  const labelCls = "block text-xs font-semibold text-slate-600 mb-1.5 dark:text-slate-400";
 
   return (
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-lg backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm"
+      className="rounded-2xl border border-slate-200 bg-white shadow-2xl p-0 w-[90vw] max-w-lg backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900"
     >
       <form onSubmit={handleSave} noValidate className="flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="text-base font-bold text-slate-900">Edit Task</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Edit Task</h2>
           <button type="button" onClick={() => dialogRef.current.close()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="Close">
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Close">
             <XIcon />
           </button>
         </div>
@@ -107,7 +107,7 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
             </div>
             <div>
               <label className={labelCls} htmlFor="et-role">
-                Role <span className="font-normal text-slate-400">— optional</span>
+                Role <span className="font-normal text-slate-400 dark:text-slate-500">— optional</span>
               </label>
               <input id="et-role" type="text" value={assigneeRole}
                 onChange={(e) => setAssigneeRole(e.target.value)}
@@ -119,7 +119,7 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelCls} htmlFor="et-deadline">
-                Deadline <span className="font-normal text-slate-400">— blank to clear</span>
+                Deadline <span className="font-normal text-slate-400 dark:text-slate-500">— blank to clear</span>
               </label>
               <input id="et-deadline" type="date" value={deadline}
                 onChange={(e) => setDeadline(e.target.value)} className={inputCls} />
@@ -147,17 +147,17 @@ export default function EditTaskModal({ task, onSaved, onClose }) {
         </div>
 
         {error && (
-          <p className="px-6 pb-2 text-xs text-red-600">{error}</p>
+          <p className="px-6 pb-2 text-xs text-red-600 dark:text-red-400">{error}</p>
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100">
+        <div className="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100 dark:border-slate-800">
           <button type="button" onClick={() => dialogRef.current.close()} disabled={saving}
-            className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition disabled:opacity-50">
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
             Cancel
           </button>
           <button type="submit" disabled={saving || !title.trim()}
-            className="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition disabled:opacity-50 disabled:cursor-not-allowed">
+            className="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white">
             {saving ? "Saving…" : "Save Changes"}
           </button>
         </div>

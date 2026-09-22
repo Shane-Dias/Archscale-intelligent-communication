@@ -49,6 +49,10 @@ const NotesIcon = () => (
 
 // ── Deadline label + color (task 5) ───────────────────────────────────────────
 // ≤3 days → red  |  ≤7 days → amber/yellow  |  >7 days → blue
+const DEADLINE_URGENT = "bg-red-50 text-red-700 border-red-200 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300";
+const DEADLINE_SOON   = "bg-amber-50 text-amber-700 border-amber-200 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300";
+const DEADLINE_LATER  = "bg-blue-50 text-blue-700 border-blue-200 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300";
+
 function getDeadlineLabel(deadline) {
   if (!deadline) return null;
   const now = new Date();
@@ -57,15 +61,15 @@ function getDeadlineLabel(deadline) {
   const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
   const diffDays = Math.round((dueDay - nowDay) / (1000 * 60 * 60 * 24));
 
-  if (diffDays < 0)   return { text: "Overdue",              cls: "bg-red-50 text-red-700 border-red-200" };
-  if (diffDays === 0) return { text: "Due today",             cls: "bg-red-50 text-red-700 border-red-200" };
-  if (diffDays <= 3)  return { text: `${diffDays}d left`,     cls: "bg-red-50 text-red-700 border-red-200" };
-  if (diffDays <= 7)  return { text: `${diffDays}d left`,     cls: "bg-amber-50 text-amber-700 border-amber-200" };
+  if (diffDays < 0)   return { text: "Overdue",           cls: DEADLINE_URGENT };
+  if (diffDays === 0) return { text: "Due today",         cls: DEADLINE_URGENT };
+  if (diffDays <= 3)  return { text: `${diffDays}d left`, cls: DEADLINE_URGENT };
+  if (diffDays <= 7)  return { text: `${diffDays}d left`, cls: DEADLINE_SOON };
   if (diffDays < 30) {
     const weeks = Math.floor(diffDays / 7);
-    return { text: weeks === 1 ? "1 wk left" : `${weeks} wks left`, cls: "bg-blue-50 text-blue-700 border-blue-200" };
+    return { text: weeks === 1 ? "1 wk left" : `${weeks} wks left`, cls: DEADLINE_LATER };
   }
-  return { text: due.toLocaleDateString(), cls: "bg-blue-50 text-blue-700 border-blue-200" };
+  return { text: due.toLocaleDateString(), cls: DEADLINE_LATER };
 }
 
 function isOverdue(deadline) {
@@ -78,22 +82,22 @@ function isOverdue(deadline) {
 }
 
 function getRoleBadgeStyle(role) {
-  if (!role) return "bg-slate-50 text-slate-600 border-slate-200";
+  if (!role) return "bg-slate-50 text-slate-600 border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300";
   const r = role.toLowerCase();
-  if (r.includes("engineer"))  return "bg-sky-50 text-sky-700 border-sky-200";
-  if (r.includes("architect")) return "bg-emerald-50 text-emerald-700 border-emerald-200";
-  if (r.includes("manager"))   return "bg-purple-50 text-purple-700 border-purple-200";
-  if (r.includes("client"))    return "bg-indigo-50 text-indigo-700 border-indigo-200";
-  return "bg-slate-50 text-slate-700 border-slate-200";
+  if (r.includes("engineer"))  return "bg-sky-50 text-sky-700 border-sky-200 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300";
+  if (r.includes("architect")) return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
+  if (r.includes("manager"))   return "bg-purple-50 text-purple-700 border-purple-200 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300";
+  if (r.includes("client"))    return "bg-indigo-50 text-indigo-700 border-indigo-200 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300";
+  return "bg-slate-50 text-slate-700 border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300";
 }
 
 // ── Inline delete confirmation row (task 3) ───────────────────────────────────
 function DeleteConfirmRow({ task, onConfirm, onCancel, loading }) {
   return (
-    <tr className="bg-red-50">
+    <tr className="bg-red-50 dark:bg-red-500/10">
       <td colSpan={5} className="px-4 py-3">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 text-sm text-red-800">
+          <div className="flex items-center gap-2.5 text-sm text-red-800 dark:text-red-200">
             <TrashIcon />
             <span>
               Delete <strong className="font-semibold">"{task.title}"</strong>?
@@ -104,7 +108,7 @@ function DeleteConfirmRow({ task, onConfirm, onCancel, loading }) {
             <button
               onClick={onCancel}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               <XIcon size="3" /> Cancel
             </button>
@@ -128,7 +132,7 @@ function DeleteConfirmRow({ task, onConfirm, onCancel, loading }) {
 function Toast({ msg }) {
   if (!msg) return null;
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 bg-slate-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-2xl border border-slate-700 animate-fade-in whitespace-nowrap pointer-events-none">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 bg-slate-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-2xl border border-slate-700 animate-fade-in whitespace-nowrap pointer-events-none dark:border-slate-600 dark:bg-slate-800">
       <CheckIcon />
       <span>{msg}</span>
     </div>
@@ -214,13 +218,13 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
   }
 
   return (
-    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
 
       {/* Header + filter toolbar */}
-      <div className="px-5 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center gap-3">
+      <div className="px-5 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center gap-3 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
-          <h2 className="text-base font-bold text-slate-900">Tasks</h2>
-          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Tasks</h2>
+          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
             {tasks?.length || 0}
           </span>
         </div>
@@ -230,11 +234,11 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
 
             {/* Status */}
             <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Status</span>
+              <span className="text-slate-500 font-medium dark:text-slate-400">Status</span>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
               >
                 <option value="all">All</option>
                 <option value="pending">Pending</option>
@@ -245,11 +249,11 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
 
             {/* Assignee */}
             <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Assignee</span>
+              <span className="text-slate-500 font-medium dark:text-slate-400">Assignee</span>
               <select
                 value={filterAssignee}
                 onChange={(e) => setFilterAssignee(e.target.value)}
-                className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
               >
                 {assigneeOptions.map((a) => (
                   <option key={a} value={a}>{a === "all" ? "All" : a}</option>
@@ -260,11 +264,11 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
             {/* Role */}
             {roleOptions && (
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-medium">Role</span>
+                <span className="text-slate-500 font-medium dark:text-slate-400">Role</span>
                 <select
                   value={filterRole}
                   onChange={(e) => setFilterRole(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                  className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                 >
                   {roleOptions.map((r) => (
                     <option key={r} value={r}>{r === "all" ? "All" : r}</option>
@@ -274,12 +278,12 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
             )}
 
             {/* Overdue toggle */}
-            <label className="flex items-center gap-1.5 cursor-pointer select-none text-slate-600 font-medium">
+            <label className="flex items-center gap-1.5 cursor-pointer select-none text-slate-600 font-medium dark:text-slate-300">
               <input
                 type="checkbox"
                 checked={filterOverdue}
                 onChange={(e) => setFilterOverdue(e.target.checked)}
-                className="rounded border-slate-300 text-red-600 focus:ring-red-500 h-3.5 w-3.5 cursor-pointer"
+                className="rounded border-slate-300 text-red-600 focus:ring-red-500 h-3.5 w-3.5 cursor-pointer dark:border-slate-600 dark:bg-slate-800"
               />
               Overdue only
             </label>
@@ -288,13 +292,13 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
             {hasActiveFilter && (
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white hover:bg-slate-50 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
               >
                 <XIcon size="3" /> Clear filters
               </button>
             )}
 
-            <span className="text-slate-400 text-xs border-l border-slate-200 pl-2.5 ml-1">
+            <span className="text-slate-400 text-xs border-l border-slate-200 pl-2.5 ml-1 dark:border-slate-700 dark:text-slate-500">
               {filtered.length} / {tasks.length}
             </span>
           </div>
@@ -303,14 +307,14 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="py-12 text-center text-sm text-slate-400">
+        <div className="py-12 text-center text-sm text-slate-400 dark:text-slate-500">
           {hasActiveFilter ? "No tasks match the selected filters." : "No tasks extracted yet."}
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+              <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
                 <th className="py-3 px-4 w-5/12">Task</th>
                 <th className="py-3 px-4 w-2/12">Assignee</th>
                 <th className="py-3 px-3 w-2/12">Deadline</th>
@@ -318,7 +322,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                 <th className="py-3 px-4 text-right w-1/12">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {filtered.map((task) => {
                 const dl = getDeadlineLabel(task.deadline);
                 const isThisDeleting = deletingId === task._id;
@@ -327,15 +331,15 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                 return [
                   <tr
                     key={task._id}
-                    className={`group hover:bg-slate-50/60 transition ${isThisDeleting || isConfirming ? "opacity-50" : ""}`}
+                    className={`group hover:bg-slate-50/60 transition dark:hover:bg-slate-800/50 ${isThisDeleting || isConfirming ? "opacity-50" : ""}`}
                   >
                     {/* Title */}
-                    <td className="py-3 px-4 font-medium text-slate-900 leading-snug">
+                    <td className="py-3 px-4 font-medium text-slate-900 leading-snug dark:text-slate-100">
                       <div className="flex items-center gap-2">
                         <span>{task.title}</span>
                         <ConfidenceIndicator confidence={task.confidence} size="sm" />
                         {task.notes && (
-                          <span title={task.notes} className="text-slate-400 flex-shrink-0">
+                          <span title={task.notes} className="text-slate-400 flex-shrink-0 dark:text-slate-500">
                             <NotesIcon />
                           </span>
                         )}
@@ -344,7 +348,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
 
                     {/* Assignee */}
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <div className="font-medium text-slate-800">{task.assignee || "Unassigned"}</div>
+                      <div className="font-medium text-slate-800 dark:text-slate-200">{task.assignee || "Unassigned"}</div>
                       {task.assigneeRole && (
                         <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold border mt-0.5 ${getRoleBadgeStyle(task.assigneeRole)}`}>
                           {task.assigneeRole}
@@ -354,7 +358,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
 
                     {/* Deadline */}
                     <td className="py-3 px-3 whitespace-nowrap">
-                      <div className="text-slate-700 font-medium">
+                      <div className="text-slate-700 font-medium dark:text-slate-300">
                         {task.deadline ? new Date(task.deadline).toLocaleDateString() : "—"}
                       </div>
                       {dl && (
@@ -371,10 +375,10 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                         onChange={(e) => handleStatusChange(task._id, e.target.value)}
                         className={`text-[11px] font-semibold px-2 py-1 rounded-full border cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition ${
                           task.status === "done"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 focus:ring-emerald-400"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 focus:ring-emerald-400 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
                             : task.status === "in_progress"
-                            ? "bg-blue-50 text-blue-700 border-blue-200 focus:ring-blue-400"
-                            : "bg-amber-50 text-amber-700 border-amber-200 focus:ring-amber-400"
+                            ? "bg-blue-50 text-blue-700 border-blue-200 focus:ring-blue-400 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300"
+                            : "bg-amber-50 text-amber-700 border-amber-200 focus:ring-amber-400 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300"
                         }`}
                       >
                         <option value="pending">Pending</option>
@@ -388,14 +392,14 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                       <div className="flex items-center justify-end gap-0.5">
                         <button
                           onClick={() => setEditTask(task)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition dark:text-slate-500 dark:hover:bg-cyan-500/10 dark:hover:text-cyan-400"
                           title="Edit"
                         >
                           <EditIcon />
                         </button>
                         <button
                           onClick={() => handleNotify(task)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition dark:text-slate-500 dark:hover:bg-amber-500/10 dark:hover:text-amber-400"
                           title="Notify assignee"
                         >
                           <BellIcon />
@@ -403,7 +407,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                         {task.conversationId && (
                           <button
                             onClick={() => { setPreviewConv(task.conversationId); setPreviewTitle(task.title); }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200"
                             title="View source"
                           >
                             <EyeIcon />
@@ -412,7 +416,7 @@ export default function TaskList({ tasks, onStatusChange, onTaskUpdate, onTaskDe
                         <button
                           onClick={() => setConfirmId(task._id)}
                           disabled={isThisDeleting}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-40"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-40 dark:text-slate-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
                           title="Delete"
                         >
                           <TrashIcon />

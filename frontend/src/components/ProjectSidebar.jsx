@@ -40,13 +40,13 @@ export default function ProjectSidebar({ selectedId, onSelect }) {
 
   return (
     <aside className="w-full shrink-0 lg:w-72" data-purpose="sidebar-navigation">
-      <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="mb-3 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Projects</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Projects</span>
           <button
             type="button"
             onClick={() => setCreating((value) => !value)}
-            className="inline-flex items-center gap-1 rounded-md border border-cyan-200 bg-cyan-50 px-2 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100 hover:text-cyan-800"
+            className="inline-flex items-center gap-1 rounded-md border border-cyan-200 bg-cyan-50 px-2 py-1 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100 hover:text-cyan-800 dark:border-cyan-500/30 dark:bg-cyan-500/10 dark:text-cyan-300 dark:hover:bg-cyan-500/20 dark:hover:text-cyan-200"
             title="Add new project"
           >
             <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -57,20 +57,20 @@ export default function ProjectSidebar({ selectedId, onSelect }) {
         </div>
 
         {creating && (
-          <form onSubmit={handleCreate} className="mb-3 space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+          <form onSubmit={handleCreate} className="mb-3 space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-700 dark:bg-slate-800">
             <input
               type="text"
-              className="w-full rounded border border-slate-300 bg-white px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              className="w-full rounded border border-slate-300 bg-white px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
               placeholder="New project name"
               value={newName}
               onChange={(event) => setNewName(event.target.value)}
               autoFocus
             />
             <div className="flex items-center gap-2">
-              <button type="submit" className="rounded bg-cyan-700 px-3 py-1 text-xs font-semibold text-white transition hover:bg-cyan-800">Add</button>
-              <button type="button" onClick={() => setCreating(false)} className="px-2 py-1 text-xs text-slate-500 hover:text-slate-700">Cancel</button>
+              <button type="submit" className="rounded bg-cyan-700 px-3 py-1 text-xs font-semibold text-white transition hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-500">Add</button>
+              <button type="button" onClick={() => setCreating(false)} className="px-2 py-1 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">Cancel</button>
             </div>
-            {error && <p className="mt-1 text-[11px] text-rose-600">{error}</p>}
+            {error && <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">{error}</p>}
           </form>
         )}
 
@@ -84,14 +84,14 @@ export default function ProjectSidebar({ selectedId, onSelect }) {
                 onClick={() => onSelect(project._id)}
                 className={`group relative w-full rounded-lg border p-3.5 text-left shadow-sm transition focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
                   isSelected
-                    ? "border-slate-800 bg-slate-900 text-white hover:border-slate-700"
-                    : "border-slate-200/80 bg-slate-50 text-slate-800 hover:bg-slate-100"
+                    ? "border-slate-800 bg-slate-900 text-white hover:border-slate-700 dark:border-cyan-500/60 dark:bg-slate-800 dark:hover:border-cyan-500/80"
+                    : "border-slate-200/80 bg-slate-50 text-slate-800 hover:bg-slate-100 dark:border-slate-700/80 dark:bg-slate-800/50 dark:text-slate-200 dark:hover:bg-slate-800"
                 }`}
               >
                 <div className="mb-1.5 flex items-center justify-between">
                   <div className="flex min-w-0 items-center gap-2">
                     <span className={`h-2 w-2 shrink-0 rounded-full ${isSelected ? "bg-emerald-400" : "bg-cyan-500"}`} />
-                    <h3 className={`truncate text-sm font-semibold ${isSelected ? "text-white" : "text-slate-900"}`}>{project.name}</h3>
+                    <h3 className={`truncate text-sm font-semibold ${isSelected ? "text-white" : "text-slate-900 dark:text-slate-100"}`}>{project.name}</h3>
                   </div>
                   {isSelected && (
                     <svg className="h-4 w-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -99,15 +99,15 @@ export default function ProjectSidebar({ selectedId, onSelect }) {
                     </svg>
                   )}
                 </div>
-                <div className={`mt-2 flex items-center gap-2 border-t pt-2 text-xs font-mono ${isSelected ? "border-slate-800 text-slate-300" : "border-slate-200 text-slate-500"}`}>
-                  <span className={`rounded px-2 py-0.5 font-medium ${isSelected ? "bg-slate-800 text-cyan-400" : "border border-slate-200 bg-white text-cyan-700"}`}>{project.taskCount ?? 0}T</span>
-                  <span className={`rounded px-2 py-0.5 font-medium ${isSelected ? "bg-slate-800 text-amber-400" : "border border-slate-200 bg-white text-amber-700"}`}>{project.decisionCount ?? 0}D</span>
+                <div className={`mt-2 flex items-center gap-2 border-t pt-2 text-xs font-mono ${isSelected ? "border-slate-800 text-slate-300 dark:border-slate-700" : "border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400"}`}>
+                  <span className={`rounded px-2 py-0.5 font-medium ${isSelected ? "bg-slate-800 text-cyan-400 dark:bg-slate-900 dark:text-cyan-300" : "border border-slate-200 bg-white text-cyan-700 dark:border-slate-700 dark:bg-slate-900 dark:text-cyan-300"}`}>{project.taskCount ?? 0}T</span>
+                  <span className={`rounded px-2 py-0.5 font-medium ${isSelected ? "bg-slate-800 text-amber-400 dark:bg-slate-900 dark:text-amber-300" : "border border-slate-200 bg-white text-amber-700 dark:border-slate-700 dark:bg-slate-900 dark:text-amber-300"}`}>{project.decisionCount ?? 0}D</span>
                 </div>
               </button>
             );
           })}
 
-          {projects.length === 0 && <p className="py-2 text-center text-xs text-slate-400">No projects yet. Create one to get started.</p>}
+          {projects.length === 0 && <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">No projects yet. Create one to get started.</p>}
         </div>
       </div>
     </aside>

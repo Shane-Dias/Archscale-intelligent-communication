@@ -44,8 +44,8 @@ const XIcon = () => (
 // ── Inline delete confirmation (task 3) ───────────────────────────────────────
 function DeleteConfirmInline({ item, typeLabel, onConfirm, onCancel, loading }) {
   return (
-    <div className="mt-2 flex items-center justify-between gap-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
-      <div className="flex items-center gap-2 text-sm text-red-800 min-w-0">
+    <div className="mt-2 flex items-center justify-between gap-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5 dark:border-red-500/30 dark:bg-red-500/10">
+      <div className="flex items-center gap-2 text-sm text-red-800 min-w-0 dark:text-red-200">
         <TrashIcon />
         <span className="truncate">Delete this <strong>{typeLabel}</strong>? Cannot be undone.</span>
       </div>
@@ -53,7 +53,7 @@ function DeleteConfirmInline({ item, typeLabel, onConfirm, onCancel, loading }) 
         <button
           onClick={onCancel}
           disabled={loading}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition disabled:opacity-50"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
         >
           <XIcon /> Cancel
         </button>
@@ -76,7 +76,7 @@ function DeleteConfirmInline({ item, typeLabel, onConfirm, onCancel, loading }) 
 function Toast({ msg }) {
   if (!msg) return null;
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 bg-slate-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-2xl border border-slate-700 whitespace-nowrap pointer-events-none">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 bg-slate-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-2xl border border-slate-700 whitespace-nowrap pointer-events-none dark:border-slate-600 dark:bg-slate-800">
       <CheckIcon />
       <span>{msg}</span>
     </div>
@@ -85,9 +85,9 @@ function Toast({ msg }) {
 
 // ── Badge styles ──────────────────────────────────────────────────────────────
 function getBadgeStyle(type) {
-  if (type === "pending_approval") return "bg-amber-50 text-amber-800 border-amber-200";
-  if (type === "approval")         return "bg-emerald-50 text-emerald-800 border-emerald-200";
-  return "bg-blue-50 text-blue-800 border-blue-200";
+  if (type === "pending_approval") return "bg-amber-50 text-amber-800 border-amber-200 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300";
+  if (type === "approval")         return "bg-emerald-50 text-emerald-800 border-emerald-200 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300";
+  return "bg-blue-50 text-blue-800 border-blue-200 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300";
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -143,13 +143,13 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
   }
 
   return (
-    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
 
       {/* Header + filters */}
-      <div className="px-5 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="px-5 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center gap-3 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
-          <h2 className="text-base font-bold text-slate-900">Decisions & Approvals</h2>
-          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Decisions & Approvals</h2>
+          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
             {decisions?.length || 0}
           </span>
         </div>
@@ -158,11 +158,11 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
           <div className="flex flex-wrap items-center gap-2 sm:ml-auto text-xs">
             {/* Type filter */}
             <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Type</span>
+              <span className="text-slate-500 font-medium dark:text-slate-400">Type</span>
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
               >
                 <option value="all">All</option>
                 <option value="decision">Decision</option>
@@ -174,11 +174,11 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
             {/* Decided by filter */}
             {decidedByOptions && (
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-medium">Decided By</span>
+                <span className="text-slate-500 font-medium dark:text-slate-400">Decided By</span>
                 <select
                   value={filterDecidedBy}
                   onChange={(e) => setFilterDecidedBy(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer"
+                  className="bg-white border border-slate-200 rounded-lg py-1.5 pl-2.5 pr-6 text-xs text-slate-700 font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                 >
                   {decidedByOptions.map((o) => (
                     <option key={o} value={o}>{o === "all" ? "All" : o}</option>
@@ -190,13 +190,13 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
             {hasActiveFilter && (
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white hover:bg-slate-50 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
               >
                 <XIcon /> Clear
               </button>
             )}
 
-            <span className="text-slate-400 border-l border-slate-200 pl-2.5">
+            <span className="text-slate-400 border-l border-slate-200 pl-2.5 dark:border-slate-700 dark:text-slate-500">
               {filtered.length} / {decisions.length}
             </span>
           </div>
@@ -205,11 +205,11 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
 
       {/* List */}
       {filtered.length === 0 ? (
-        <div className="py-12 text-center text-sm text-slate-400">
+        <div className="py-12 text-center text-sm text-slate-400 dark:text-slate-500">
           {hasActiveFilter ? "No decisions match the current filters." : "No decisions extracted yet."}
         </div>
       ) : (
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 dark:divide-slate-800">
           {filtered.map((d) => {
             const isDeleting   = deletingId === d._id;
             const isConfirming = confirmId  === d._id;
@@ -217,7 +217,7 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
             return (
               <div
                 key={d._id}
-                className={`px-5 py-4 hover:bg-slate-50/60 transition ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
+                className={`px-5 py-4 hover:bg-slate-50/60 transition dark:hover:bg-slate-800/50 ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   {/* Left: badge + indicator + text */}
@@ -229,13 +229,13 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
                       <ConfidenceIndicator confidence={d.confidence} size="sm" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-slate-900 leading-snug">{d.description}</p>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 flex-wrap">
+                      <p className="text-sm font-medium text-slate-900 leading-snug dark:text-slate-100">{d.description}</p>
+                      <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 flex-wrap dark:text-slate-400">
                         {d.decidedBy && (
-                          <span className="font-medium text-slate-700">— {d.decidedBy}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">— {d.decidedBy}</span>
                         )}
                         {d.notes && (
-                          <span className="flex items-center gap-1 text-cyan-700">
+                          <span className="flex items-center gap-1 text-cyan-700 dark:text-cyan-400">
                             <NotesEditIcon />
                             Notes attached
                           </span>
@@ -248,7 +248,7 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
                   <div className="flex items-center gap-0.5 flex-shrink-0">
                     <button
                       onClick={() => setNotesDecision(d)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition dark:text-slate-500 dark:hover:bg-cyan-500/10 dark:hover:text-cyan-400"
                       title={d.notes ? "Edit notes" : "Add notes"}
                     >
                       <NotesEditIcon />
@@ -256,7 +256,7 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
                     {d.conversationId && (
                       <button
                         onClick={() => { setPreviewConv(d.conversationId); setPreviewTitle(d.description); }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200"
                         title="View source"
                       >
                         <EyeIcon />
@@ -265,7 +265,7 @@ export default function DecisionList({ decisions, onNotesChange, onDecisionDelet
                     <button
                       onClick={() => setConfirmId(d._id)}
                       disabled={isDeleting}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-40"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-40 dark:text-slate-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
                       title="Delete"
                     >
                       <TrashIcon />

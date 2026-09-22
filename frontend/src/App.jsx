@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ProjectSidebar from "./components/ProjectSidebar";
+import ThemeToggle from "./components/ThemeToggle";
 import Dashboard from "./pages/Dashboard";
 
 export default function App() {
@@ -13,10 +14,10 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans dark:bg-slate-950 dark:text-slate-100">
 
       {/* ── Top Navigation Bar ── */}
-      <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 text-white">
+      <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 text-white dark:border-slate-800 dark:bg-slate-950">
         <div className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
 
           {/* Brand */}
@@ -77,6 +78,7 @@ export default function App() {
 
           {/* Right side — sync indicator + avatar */}
           <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
+            <ThemeToggle />
             <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 bg-slate-800 rounded-full border border-slate-700 text-xs text-slate-400">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -107,13 +109,13 @@ export default function App() {
       </div>
 
       {/* ── Footer ── */}
-      <footer className="mt-auto border-t border-slate-200 bg-white py-3 text-center text-xs text-slate-500">
+      <footer className="mt-auto border-t border-slate-200 bg-white py-3 text-center text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
         <div className="max-w-[1720px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-600">ArchScale Intelligence Engine</span>
+            <span className="font-semibold text-slate-600 dark:text-slate-300">ArchScale Intelligence Engine</span>
             <span>— Real-time Project Communications</span>
           </div>
-          <span className="text-slate-400">AI-powered extraction · Gemini</span>
+          <span className="text-slate-400 dark:text-slate-500">AI-powered extraction · Gemini</span>
         </div>
       </footer>
 
