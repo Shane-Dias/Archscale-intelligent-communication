@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { updateTask } from "../api/client";
+import useLockBodyScroll from "../hooks/useLockBodyScroll";
 
 const STATUS_OPTIONS = [
   { value: "pending",     label: "Pending" },
@@ -22,6 +23,8 @@ function toDateInputValue(date) {
 
 export default function EditTaskModal({ task, onSaved, onClose }) {
   const dialogRef = useRef(null);
+
+  useLockBodyScroll();
 
   const [title,        setTitle]        = useState(task.title        || "");
   const [assignee,     setAssignee]     = useState(task.assignee     || "");

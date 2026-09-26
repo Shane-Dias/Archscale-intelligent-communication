@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import useLockBodyScroll from "../hooks/useLockBodyScroll";
 
 const XIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -8,6 +9,8 @@ const XIcon = () => (
 
 export default function NotesModal({ itemTitle, initialNotes = "", onSave, onClose }) {
   const dialogRef = useRef(null);
+
+  useLockBodyScroll();
   const [notes,  setNotes]  = useState(initialNotes);
   const [saving, setSaving] = useState(false);
 

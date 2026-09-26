@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import useLockBodyScroll from "../hooks/useLockBodyScroll";
 
 const SOURCE_LABELS = {
   manual:             "Manual",
@@ -31,6 +32,8 @@ const FileTextIcon = () => (
 
 export default function SourcePreviewModal({ conversation, itemTitle, onClose }) {
   const dialogRef = useRef(null);
+
+  useLockBodyScroll();
 
   useEffect(() => {
     const dialog = dialogRef.current;
